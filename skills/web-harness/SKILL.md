@@ -2,8 +2,8 @@
 name: web-harness
 description: >
   WebApp 项目 Harness 框架生成器。当用户需要为 Web 应用项目初始化完整的多智能体协作框架时使用，
-  包括：项目文档结构(codebuddy.md/skills/docs/scripts/tests)、6个核心角色定义(planner/coder/evaluator/deployer/tester/pm)、
-  状态机工作流(TDD驱动+测试后置)、WebApp 专项评估能力、验证机制、监控机制、三层记忆系统(会话/项目/经验)、
+  包括：项目文档结构(codebuddy.md/skills/docs/scripts/tests)、**7个核心角色定义**(planner/coder/**reviewer**/evaluator/deployer/tester/pm)、
+  状态机工作流(TDD驱动+测试后置+**Review**)、WebApp 专项评估能力、验证机制、监控机制、三层记忆系统(会话/项目/经验)、
   build-team 团队引擎(启动/恢复/重启多Agent协作)、测试/生产环境分离。
   触发词：新建工程、初始化框架、生成 harness、webapp 框架、项目脚手架、多 agent 协作框架、build-team。
 agent_created: true
@@ -40,7 +40,7 @@ agent_created: true
 | `project_path` | 目标项目根目录 | 当前工作目录 |
 | `project_name` | 项目名称 | 目录名 |
 | `tech_stack` | 技术栈 (如 react/vue/fastapi/django) | 需询问 |
-| `agents` | 需要的 agent 角色 | 全部 6 个 |
+| `agents` | 需要的 agent 角色 | 全部 7 个 |
 
 ### 第二步：执行 `generate` 工作流
 
@@ -49,8 +49,8 @@ agent_created: true
 ```
 1. confirm-context           → 确认 tech_stack + TDD 策略 + 环境配置
 2. generate-structure        → 目录结构 + codebuddy.md
-3. generate-agents           → 6 个 agent 角色定义
-4. generate-state-machine    → 状态机与转换规则（含 TEST-PLAN/DEPLOY-TEST/DEPLOY-PROD）
+3. generate-agents           → 7 个 agent 角色定义（含 Reviewer）
+4. generate-state-machine    → 状态机与转换规则（含 TEST-PLAN/REVIEW/DEPLOY-TEST/DEPLOY-PROD）
 5. generate-evaluation       → WebApp 评估体系
 6. generate-verification     → 验证机制（质量门禁 + 测试/生产环境分离）
 7. generate-monitoring       → 监控机制（健康检查）
@@ -82,6 +82,7 @@ agent_created: true
 ├── .agents/                      # 🤖 Agent 角色定义
 │   ├── planner.md                #    架构规划师
 │   ├── coder.md                  #    核心开发者
+│   ├── reviewer.md               #    代码评审师（新增）
 │   ├── evaluator.md              #    质量评估师
 │   ├── deployer.md               #    部署工程师
 │   ├── tester.md                 #    测试专家
@@ -147,6 +148,7 @@ agent_created: true
 包含：
 - 完整的状态定义（**IDEA → PLAN → TEST-PLAN → CODE → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR**）
 - **TEST-PLAN**：测试用例骨架输出（Coder + Tester 联合输出）
+- **REVIEW**：代码评审（Reviewer Agent 执行）
 - **DEPLOY-TEST**：默认部署到测试环境
 - **TEST-RUN**：E2E 测试执行（部署到测试环境后）
 - **DEPLOY-PROD**：显式部署到生产环境
@@ -175,6 +177,7 @@ agent_created: true
 多层质量门禁：
 - **Commit 级**：lint + format + unit test（TDD GREEN 验证）
 - **TEST-PLAN 级**：测试用例骨架评审
+- **REVIEW 级**：代码 Review（Reviewer Agent 执行，BLOCK 机制）
 - **DEPLOY-TEST 级**：测试环境 Health Check + Smoke Test
 - **TEST-RUN 级**：全量 E2E + 安全扫描 + review
 - **DEPLOY-PROD 级**：生产发布门禁（灰度/回滚策略 + PM 审批）

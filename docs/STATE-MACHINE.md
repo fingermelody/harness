@@ -2,10 +2,10 @@
 
 本文档定义了 WebHarness 框架的核心状态机，规定了项目从想法到上线的完整生命周期。
 
-> **v2 核心变更（TDD + 测试后置 + Review）：**
+> **v3 核心变更（TDD + 测试后置 + Review）：**
 > - TEST 拆分为 `TEST-PLAN`（PLAN 阶段中，输出测试用例骨架）和 `TEST-RUN`（部署测试环境后执行 E2E）
 > - DEPLOY 拆分为 `DEPLOY-TEST`（默认部署测试环境）和 `DEPLOY-PROD`（显式发布生产环境）
-> - **新增 `REVIEW` 阶段**：编码完成后必须经过 Review，失败则回退 CODE
+> - **新增 `REVIEW` 阶段**：编码完成后必须经过 Reviewer Agent 评审，失败则回退 CODE
 > - 流程变为：**IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR → ARCHIVE**
 
 ---
@@ -24,6 +24,8 @@
 | **生产发布** | `DEPLOY-PROD` | 部署到正式生产环境 | Deployer + PM |
 | **监控** | `MONITOR` | 线上观测与持续运营 | Deployer + PM |
 | **归档** | `ARCHIVE` | 版本结项与经验沉淀 | 全员 |
+
+---
 
 ## 状态转换图（Mermaid）
 
@@ -68,6 +70,8 @@ stateDiagram-v2
     ARCHIVE --> [*]
 ```
 
+---
+
 ## 核心流程说明
 
 ### TDD 驱动流程（关键变化）
@@ -84,6 +88,11 @@ CODE 阶段
        (RED → GREEN → REFACTOR 循环)
        (每写一段实现，就让对应测试从 RED 变 GREEN)
 
+REVIEW 阶段
+  └─ Reviewer Agent 执行代码 Review
+       (6 维度检查：正确性/可读性/可测性/性能/安全/风格)
+       (BLOCK 机制：任何一项不通过则回退 CODE)
+
 DEPLOY-TEST 阶段
   └─ Deployer 部署到测试环境
        (默认行为，除非用户显式指定 --prod)
@@ -93,9 +102,12 @@ TEST-RUN 阶段
        (使用部署时已就绪的测试用例)
 ```
 
+---
+
 ## 转换守卫规则（Guard Conditions）
 
 ### IDEA → PLAN（需求评审门）
+
 **前置条件（全部满足才允许转换）：**
 - [ ] PM 已录入需求到 Backlog
 - [ ] Planner 已完成需求澄清（≤ 3 轮追问）
@@ -107,6 +119,7 @@ TEST-RUN 阶段
 - 创建 `docs/plan/[feature-id]/` 目录
 
 ### PLAN → TEST-PLAN（方案完成门）
+
 **前置条件：**
 - [ ] 技术方案文档已完成（≥ 2 个备选方案对比）
 - [ ] API 契约已定义（OpenAPI/Swagger）
@@ -119,6 +132,7 @@ TEST-RUN 阶段
 - Tester 开始编写测试用例骨架（`.test.ts` / `_test.py` 文件框架）
 
 ### TEST-PLAN → CODE（测试计划完成门）
+
 **前置条件：**
 - [ ] 核心功能的测试用例骨架已输出（BDD Scenario 覆盖主要路径）
 - [ ] 测试用例经过 Planner + Coder 联合评审
@@ -131,6 +145,7 @@ TEST-RUN 阶段
 - 测试用例骨架已存在，Coder 进入 TDD 循环
 
 ### CODE → REVIEW（开发完成门）
+
 **前置条件（全部满足才允许提交 Review）：**
 - [ ] 所有 Story Task 标记 Done
 - [ ] **测试用例全部为 GREEN 状态**（TDD 达标）
@@ -144,6 +159,7 @@ TEST-RUN 阶段
 - 自动通知 Reviewer Agent 开始评审
 
 ### REVIEW → DEPLOY-TEST（Review 通过门）
+
 **前置条件：**
 - [ ] **Reviewer Agent 评审完成**（必选）
 - [ ] 代码变更范围合理（单次 ≤ 500 行新增/修改）
@@ -163,6 +179,7 @@ TEST-RUN 阶段
 - 通知 Deployer 开始测试环境部署
 
 ### DEPLOY-TEST → TEST-RUN（测试部署完成门）
+
 **前置条件：**
 - [ ] 测试环境部署成功
 - [ ] Health Check 所有关键路由返回 200
@@ -174,6 +191,7 @@ TEST-RUN 阶段
 - 启动测试报告收集
 
 ### TEST-RUN → EVAL（测试完成门）
+
 **前置条件：**
 - [ ] E2E 主流程 100% 通过
 - [ ] 单元/集成测试全部通过
@@ -188,6 +206,7 @@ TEST-RUN 阶段
 - 触发 Evaluator 进行综合评分
 
 ### EVAL → DEPLOY-PROD（质量放行门）
+
 **前置条件：**
 - [ ] 综合评分 ≥ 80（PASS）
 - [ ] 所有质量维度无 BLOCK 项
@@ -202,6 +221,7 @@ TEST-RUN 阶段
 - 通知 Deployer 执行生产发布
 
 ### DEPLOY-PROD → MONITOR（上线门）
+
 **前置条件：**
 - [ ] 生产环境 Health Check 通过
 - [ ] 关键业务指标（订单/登录等）无异常
@@ -211,7 +231,9 @@ TEST-RUN 阶段
 - 通知 PM + 团队上线成功
 - 开启线上监控警戒
 
-### 异常回退策略
+---
+
+## 异常回退策略
 
 | 当前状态 | 异常场景 | 目标状态 | 处理方式 |
 |----------|----------|----------|----------|
@@ -219,13 +241,15 @@ TEST-RUN 阶段
 | TEST-PLAN | 测试用例无法设计 | PLAN | 重新分析需求 |
 | CODE | 需求重大变更 | PLAN | 重新进入规划流程 |
 | CODE | 测试用例变 RED | CODE | TDD 循环修复 |
-| REVIEW | Review 不通过 | CODE | 修复问题后重新提交 Review |
+| **REVIEW** | **Review 不通过** | **CODE** | **修复问题后重新提交 Review** |
 | DEPLOY-TEST | 部署失败 | CODE | 修复后重新部署测试 |
 | TEST-RUN | 发现 Bug | CODE | 修复后重新部署测试 |
 | TEST-RUN | 发现架构缺陷 | CODE | 重构后再测 |
 | EVAL | BLOCK (< 60分) | CODE | 打回重构，Planner 辅助 |
 | DEPLOY-PROD | 部署失败 | DEPLOY-PROD | 回滚到上一版本，重新发布 |
 | MONITOR | 线上 P0 事故 | CODE | 紧急 Hotfix |
+
+---
 
 ## 角色在各状态下的权责矩阵
 
@@ -235,7 +259,7 @@ TEST-RUN 阶段
 | PLAN | ⭐ 确认 | 👑 主导 | 💬 评审 | ⭐ 评审 | | | |
 | TEST-PLAN | 📊 跟踪 | ⭐ 参与 | 💬 评审 | 👑 主导 | | | |
 | CODE | 📊 跟踪 | 💬 支持 | 👑 主导 | 💬 协助 | | | |
-| REVIEW | | | 📋 输入 | | | | 👑 主导 |
+| **REVIEW** | | | 📋 输入 | | | | **👑 主导** |
 | DEPLOY-TEST | | | | 💬 协助 | | 👑 主导 | |
 | TEST-RUN | 📊 跟踪 | | 💬 协助 | 👑 主导 | | | |
 | EVAL | 📋 决策 | | 📋 输入 | 📋 输入 | 👑 主导 | | |
@@ -286,11 +310,11 @@ TEST-RUN 阶段
 ```markdown
 ## [timestamp] STATE_TRANSITION
 
-- **from**: TEST-PLAN
-- **to**: CODE
-- **trigger**: 测试用例骨架评审通过
-- **actor**: Tester (@tester)
-- **artifacts**: tests/features/auth/, docs/plan/auth-system/
-- **guard_check**: ✅ All 4 conditions met
-- **notes**: 7 个核心场景的 BDD Scenario 已输出，Coder 开始 TDD 循环
+- **from**: REVIEW
+- **to**: DEPLOY-TEST
+- **trigger**: Reviewer Agent 评审通过
+- **actor**: Reviewer (@reviewer)
+- **artifacts**: docs/review/user-auth-report.md
+- **guard_check**: ✅ All conditions met (6维度全部 PASS)
+- **notes**: 代码质量评分 85/100，Review 通过，通知 Deployer 开始部署
 ```

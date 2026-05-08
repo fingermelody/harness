@@ -2,21 +2,26 @@
 
 本文档定义了多层质量门禁规则，确保每个阶段的交付物都达到预期标准。
 
-> **v2 核心变更：** 门禁与状态机对齐，新增 TEST-PLAN、DEPLOY-TEST、TEST-RUN、DEPLOY-PROD 四个门禁节点，实现 TDD 驱动 + 测试后置。
+> **v2 核心变更：** 门禁与状态机对齐，新增 TEST-PLAN、**REVIEW**、DEPLOY-TEST、TEST-RUN、DEPLOY-PROD 四个门禁节点，实现 TDD 驱动 + 测试后置 + 代码 Review。
 
 ---
 
 ## 门禁层级总览
 
 ```
-状态对齐的六层门禁（v2）
+状态对齐的门禁层级（v2）
 ┌──────────────────┐
 │  TEST-PLAN Gate  │  ← PLAN→CODE 前：测试用例骨架评审
 │  ~10 分钟        │
 └────────┬─────────┘
          ↓
 ┌──────────────────┐
-│  DEPLOY-TEST     │  ← CODE→TEST-RUN 前：部署到测试环境 + Health Check
+│  REVIEW Gate     │  ← CODE→DEPLOY-TEST 前：代码 Review（Reviewer Agent）
+│  ~5 分钟         │
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│  DEPLOY-TEST     │  ← REVIEW→TEST-RUN 前：部署到测试环境 + Health Check
 │  ~5 分钟         │
 └────────┬─────────┘
          ↓
@@ -125,7 +130,80 @@ describe('用户登录', () => {
 
 ---
 
-## Level 4：DEPLOY-TEST Gate（~5 分钟）★ 新增
+## Level 4：REVIEW Gate（~5 分钟）★ 新增
+
+**目标**：代码评审由 Reviewer Agent 执行，确保代码通过后才进入部署阶段。
+
+**触发时机**：CODE → REVIEW 状态转换时，以及 REVIEW → DEPLOY-TEST 之间。
+
+### 检查清单
+
+| # | 检查项 | 工具 | 严格度 | 失败处理 |
+|---|--------|------|--------|----------|
+| 4.1 | Reviewer Agent 评审 | Reviewer Agent | **BLOCK** | Review 不通过则阻断 |
+| 4.2 | 代码变更范围 | 代码统计 | **BLOCK** | 单次 ≤ 500 行新增/修改 |
+| 4.3 | 无安全漏洞 | 安全扫描 | **BLOCK** | CRITICAL/HIGH 必须修复 |
+| 4.4 | 敏感信息检查 | trufflehog | **BLOCK** | 密钥/Token 立即阻断 |
+| 4.5 | 编码规范 | ESLint/Pylint | **BLOCK** | 规范不符则阻断 |
+
+### Review 检查维度
+
+```
+必检项（有一项不通过则 BLOCK）：
+□ 无明显逻辑错误
+□ 无安全漏洞（注入/敏感信息泄露）
+□ 敏感信息未硬编码（使用环境变量）
+□ 无 P0/P1 级别问题
+
+建议项（影响评分）：
+□ 代码可读性（命名/注释/结构）
+□ 函数长度（≤ 30 行）
+□ 测试覆盖（≥ 80%）
+□ 无重复代码（DRY 原则）
+□ 无性能问题（N+1/大文件同步）
+□ 依赖注入（可测试性）
+```
+
+### Review 输出格式
+
+```markdown
+## Review Report: [模块/PR 名称]
+
+**状态**：✅ PASS / ❌ BLOCK
+
+### 通过项
+- [ ] 检查项 A
+- [ ] 检查项 B
+
+### 需要修复
+| 文件 | 行号 | 问题 | 建议修复 |
+|------|------|------|----------|
+| src/user.ts | 45 | 函数过长（80行） | 拆分为 handleAuth + processToken |
+| src/api.ts | 23 | N+1 查询 | 使用 JOIN 或批量查询 |
+
+### 评分
+- 正确性：★★★☆☆
+- 可读性：★★★★☆
+- 性能：★★★☆☆
+- 安全：★★★★☆
+- 综合：82/100 ✅
+```
+
+### REVIEW → DEPLOY-TEST 转换条件
+
+**前置条件（全部满足才允许转换）：**
+- [ ] Reviewer Agent 评审完成
+- [ ] Review 结果为 PASS
+- [ ] 所有 BLOCK 项已修复并通过 Re-Review
+- [ ] Commit message 符合规范（WHAT + WHY）
+
+**转换动作：**
+- Reviewer Agent 通知 Deployer 开始测试环境部署
+- 触发 CI 构建
+
+---
+
+## Level 5：DEPLOY-TEST Gate（~5 分钟）★ 新增
 
 **目标**：验证代码成功部署到测试环境，Health Check 通过。
 
@@ -166,7 +244,7 @@ deployer deploy --env staging
 
 ---
 
-## Level 5：TEST-RUN Gate（~15 分钟，原 Release 级）★ 重命名
+## Level 6：TEST-RUN Gate（~15 分钟，原 Release 级）★ 重命名
 
 **目标**：部署到测试环境后，执行全量 E2E + 性能 + a11y 验证。
 
@@ -204,7 +282,7 @@ deployer deploy --env staging
 
 ---
 
-## Level 6：DEPLOY-PROD Gate（~10 分钟）★ 新增
+## Level 7：DEPLOY-PROD Gate（~10 分钟）★ 新增
 
 **目标**：生产发布前的最后一道门禁，确保灰度、回滚策略就绪。
 
@@ -281,7 +359,7 @@ deployer rollback --list
 
 ---
 
-## Level 7：MONITOR Gate（~30 分钟）
+## Level 8：MONITOR Gate（~30 分钟）
 
 **目标**：部署后持续观测，确保业务指标正常。
 
