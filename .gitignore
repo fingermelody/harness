@@ -1,0 +1,30 @@
+# WorkBuddy internal
+.workbuddy/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temp
+*.tmp
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# Skill metadata (auto-generated)
+_skillhub_meta.json
+
+# Package archives (can be regenerated)
+web-harness.zip
