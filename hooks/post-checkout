@@ -1,0 +1,32 @@
+#!/bin/bash
+# WebHarness Post-checkout Hook
+# 分支切换后处理
+
+PREV_BRANCH=$1
+CURR_BRANCH=$2
+
+# 颜色
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+echo "🔄 Branch switched: $PREV_BRANCH → $CURR_BRANCH"
+
+# 切换分支时检查依赖
+if [ -f "package.json" ]; then
+    # 简单检查 node_modules 是否存在
+    if [ ! -d "node_modules" ]; then
+        echo ""
+        echo "📦 Installing dependencies..."
+        npm install
+        echo -e "  ${GREEN}✅ Dependencies installed${NC}"
+    fi
+fi
+
+# 清理旧的构建产物
+if [ -d "dist" ] && [ "$PREV_BRANCH" != "$CURR_BRANCH" ]; then
+    echo ""
+    echo "🧹 Cleaning old build artifacts..."
+    rm -rf dist
+fi
+
+exit 0

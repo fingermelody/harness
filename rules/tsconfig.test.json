@@ -1,0 +1,16 @@
+// @ts-check
+const baseConfig = require('./tsconfig.json');
+
+/** @type {import('typescript').TSConfig} */
+module.exports = {
+  ...baseConfig,
+  compilerOptions: {
+    ...baseConfig.compilerOptions,
+    // Test-specific overrides
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "types": ["vitest/globals", "node"]
+  },
+  "include": ["tests/**/*", "src/**/*", "harness/**/*"]
+};

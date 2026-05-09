@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-09T04:19:00Z",
+  "description": "WebHarness Memory Configuration",
+  "memory": {
+    "retention": {
+      "shortTerm": "7d",
+      "mediumTerm": "30d",
+      "longTerm": "90d"
+    },
+    "maxSize": {
+      "shortTerm": "10MB",
+      "mediumTerm": "50MB",
+      "longTerm": "100MB"
+    }
+  },
+  "sync": {
+    "enabled": true,
+    "interval": "5m",
+    "backupPath": "./memory/backups"
+  },
+  "preferences": {
+    "includeSystemPrompts": false,
+    "includeToolCalls": false,
+    "compactMode": true
+  }
+}

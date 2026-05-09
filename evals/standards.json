@@ -1,0 +1,115 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-09T04:19:00Z",
+  "description": "WebHarness Evaluation Standards",
+  "dimensions": [
+    {
+      "id": "code-quality",
+      "name": "代码质量",
+      "metrics": [
+        {
+          "name": "lint-pass-rate",
+          "description": "ESLint/Prettier 检查通过率",
+          "threshold": 100,
+          "unit": "%"
+        },
+        {
+          "name": "type-coverage",
+          "description": "TypeScript 类型覆盖率",
+          "threshold": 95,
+          "unit": "%"
+        },
+        {
+          "name": "test-coverage",
+          "description": "测试覆盖率",
+          "threshold": 80,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "workflow-correctness",
+      "name": "工作流正确性",
+      "metrics": [
+        {
+          "name": "state-transition-accuracy",
+          "description": "状态转换准确率",
+          "threshold": 100,
+          "unit": "%"
+        },
+        {
+          "name": "guard-rule-compliance",
+          "description": "守卫规则符合率",
+          "threshold": 100,
+          "unit": "%"
+        },
+        {
+          "name": "error-recovery-rate",
+          "description": "错误恢复率",
+          "threshold": 95,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "agent-collaboration",
+      "name": "Agent 协作质量",
+      "metrics": [
+        {
+          "name": "task-delegation-accuracy",
+          "description": "任务委托准确性",
+          "threshold": 90,
+          "unit": "%"
+        },
+        {
+          "name": "context-sharing-efficiency",
+          "description": "上下文共享效率",
+          "threshold": 85,
+          "unit": "%"
+        },
+        {
+          "name": "message-delivery-rate",
+          "description": "消息送达率",
+          "threshold": 99,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "deployment-quality",
+      "name": "部署质量",
+      "metrics": [
+        {
+          "name": "build-success-rate",
+          "description": "构建成功率",
+          "threshold": 100,
+          "unit": "%"
+        },
+        {
+          "name": "smoke-test-pass-rate",
+          "description": "冒烟测试通过率",
+          "threshold": 100,
+          "unit": "%"
+        },
+        {
+          "name": "deployment-time",
+          "description": "部署耗时",
+          "threshold": 300,
+          "unit": "秒"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "excellent": 90,
+    "good": 80,
+    "acceptable": 70,
+    "needs-improvement": 60,
+    "failing": 0
+  },
+  "reportFormat": {
+    "includeMetrics": true,
+    "includeRecommendations": true,
+    "includeTrendAnalysis": true
+  }
+}

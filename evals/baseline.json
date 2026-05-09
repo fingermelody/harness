@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "baselineDate": "2026-05-09T04:19:00Z",
+  "description": "WebHarness Baseline Metrics",
+  "baselineMetrics": {
+    "code-quality": {
+      "lint-pass-rate": 100,
+      "type-coverage": 95,
+      "test-coverage": 80
+    },
+    "workflow-correctness": {
+      "state-transition-accuracy": 100,
+      "guard-rule-compliance": 100,
+      "error-recovery-rate": 95
+    },
+    "agent-collaboration": {
+      "task-delegation-accuracy": 90,
+      "context-sharing-efficiency": 85,
+      "message-delivery-rate": 99
+    },
+    "deployment-quality": {
+      "build-success-rate": 100,
+      "smoke-test-pass-rate": 100,
+      "deployment-time": 300
+    }
+  },
+  "comparisonPeriod": "weekly",
+  "tolerance": {
+    "degradationThreshold": 5,
+    "alertThreshold": 10
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-09T04:19:00Z",
+  "session": {
+    "id": null,
+    "started": null,
+    "ended": null
+  },
+  "project": {
+    "name": "web-harness",
+    "path": "/Users/ping/WorkBuddy/harness"
+  },
+  "agent": {
+    "current": null,
+    "role": null
+  },
+  "workflow": {
+    "currentPhase": null,
+    "currentState": null,
+    "completedSteps": []
+  },
+  "memory": {
+    "shortTermCount": 0,
+    "mediumTermCount": 0,
+    "lastSync": null
+  },
+  "tasks": {
+    "pending": [],
+    "inProgress": [],
+    "completed": []
+  }
+}

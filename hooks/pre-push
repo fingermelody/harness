@@ -1,0 +1,51 @@
+#!/bin/bash
+# WebHarness Pre-push Hook
+# 推送前检查
+
+set -e
+
+echo "🪝 Running pre-push checks..."
+
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "detached")
+TARGET=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$2}  # GitLab CI 或手动
+
+# 分支保护检查
+PROTECTED_BRANCHES="^(main|master|develop|release/.*)$"
+
+if [[ "$BRANCH" =~ $PROTECTED_BRANCHES ]]; then
+    echo ""
+    echo -e "${RED}⚠️  Attempting to push to protected branch: $BRANCH${NC}"
+    echo ""
+
+    # 检查是否经过 PR
+    if [ -z "$TARGET" ]; then
+        echo "❌ Direct push to protected branch is not allowed."
+        echo ""
+        echo "Please create a pull request instead."
+        echo ""
+        exit 1
+    fi
+fi
+
+# 运行完整测试
+echo ""
+echo "🧪 Running full test suite..."
+if npm test 2>/dev/null; then
+    echo "✅ Tests passed"
+else
+    echo "❌ Tests failed"
+    exit 1
+fi
+
+# 构建检查
+echo ""
+echo "🏗️  Building..."
+if npm run build 2>/dev/null; then
+    echo "✅ Build succeeded"
+else
+    echo "❌ Build failed"
+    exit 1
+fi
+
+echo ""
+echo "✅ Pre-push checks passed!"

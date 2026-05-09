@@ -1,0 +1,24 @@
+# WebHarness Decision Log
+
+## 格式说明
+
+每条记录格式:
+```
+[TIMESTAMP] AGENT:Decision | Context | Outcome
+
+示例:
+[2026-05-09T12:00:00Z] planner:ARCH_CHOICE | SPA vs MPA | 选择 SPA
+[2026-05-09T12:05:00Z] coder:API_DESIGN | REST vs GraphQL | 选择 REST
+```
+
+## 决策维度
+
+- `ARCH_CHOICE`: 架构决策
+- `API_DESIGN`: API 设计
+- `TEST_STRATEGY`: 测试策略
+- `DEPLOY_CONFIG`: 部署配置
+- `TOOL_SELECTION`: 工具选型
+
+## 历史记录
+
+<!-- 新决策追加在此 -->

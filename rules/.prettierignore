@@ -1,0 +1,10 @@
+# Prettier Ignore Patterns
+node_modules/
+dist/
+build/
+coverage/
+.git/
+*.min.js
+*.map
+.env.local
+.env.production

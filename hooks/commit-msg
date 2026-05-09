@@ -1,0 +1,55 @@
+#!/bin/bash
+# WebHarness Commit Message Hook
+# 验证提交信息格式
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# 颜色
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+echo "📝 Checking commit message format..."
+
+# 跳过合并提交和初始提交
+if [[ "$COMMIT_MSG" =~ ^(Merge|Initial commit)" ]]; then
+    echo -e "  ${GREEN}✅ Merge/Initial commit detected, skipping${NC}"
+    exit 0
+fi
+
+# 格式要求: <type>(<scope>): <subject>
+# type: feat, fix, docs, style, refactor, test, chore
+# scope: 可选，如 core, ui, api, tests 等
+# subject: 简短描述，不超过50字符
+
+PATTERN="^(feat|fix|docs|style|refactor|test|chore|perf|ci|build)(\([a-zA-Z0-9_-]+\))?: .{1,50}"
+
+if [[ "$COMMIT_MSG" =~ $PATTERN ]]; then
+    echo -e "  ${GREEN}✅ Format valid${NC}"
+    exit 0
+fi
+
+# 详细错误信息
+echo ""
+echo -e "${RED}❌ Invalid commit message format${NC}"
+echo ""
+echo "Expected format:"
+echo "  <type>(<scope>): <subject>"
+echo ""
+echo "Example:"
+echo "  feat(core): add new workflow engine"
+echo "  fix(ui): resolve button alignment issue"
+echo "  docs: update README"
+echo ""
+echo "Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build"
+echo ""
+
+# 显示实际内容
+echo "Your commit message:"
+echo "---"
+cat "$COMMIT_MSG_FILE"
+echo "---"
+echo ""
+
+exit 1
