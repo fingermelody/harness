@@ -78,63 +78,68 @@ agent_created: true
 
 ```
 <project-root>/
-├── codebuddy.md                  # 🔑 核心原则 & 项目宪法
-├── .agents/                      # 🤖 Agent 角色定义
+├── README.md                     # 🔑 项目概览 & 状态机
+├── rules/                        # 📐 规则与规范
+│   ├── agent-dispatch.md         #    ⭐ Agent 分派规则（主 Agent 只分派不执行）
+│   ├── .eslintrc.json            #    ESLint 配置
+│   ├── .prettierrc.json          #    Prettier 配置
+│   └── tsconfig.json             #    TypeScript 配置
+├── agents/                       # 🤖 Agent 角色定义
 │   ├── planner.md                #    架构规划师
 │   ├── coder.md                  #    核心开发者
-│   ├── reviewer.md               #    代码评审师（新增）
+│   ├── reviewer.md               #    代码评审师
 │   ├── evaluator.md              #    质量评估师
 │   ├── deployer.md               #    部署工程师
-│   ├── tester.md                 #    测试专家
+│   ├── tester.md                #    测试专家
 │   └── pm.md                     #    项目管理者
-├── .memory/                      # 🧠 三层记忆系统 (新增!)
-│   ├── config.json               #    动态配置记忆 (L2)
-│   ├── decisions.log             #    决策日志 (L2, append-only)
-│   ├── tech-debt.json            #    技术债登记册 (L2)
-│   ├── iteration-learnings.md    #    迭代经验沉淀 (L2)
-│   ├── agent-performance.json    #    Agent 历史表现 (L2)
-│   └── sessions/                 #    会话记忆 (L1)
-│       ├── active.json           #      当前活跃会话状态
-│       ├── [session-id]/         #      会话快照与检查点
-│       └── archive/              #      已归档会话
-├── .skills/                      # 📚 可复用技能库
-│   ├── webapp-eval/              #    WebApp 评估技能
-│   ├── verification-gate/         #    质量门禁技能
-│   ├── health-check/              #    健康监控技能
-│   ├── deploy-test/               #    测试环境部署技能（新增）
-│   ├── deploy-prod/               #    生产环境发布技能（新增）
-│   └── build-team/               #    团队引擎技能
+├── memory/                       # 🧠 三层记忆系统
+│   ├── config.json              #    动态配置记忆
+│   ├── state.json               #    当前会话状态
+│   ├── decisions.log            #    决策日志
+│   └── backups/                 #    状态快照
+├── evals/                        # 📊 评估体系
+│   ├── standards.json           #    评估标准（4维度）
+│   ├── baseline.json            #    基线指标
+│   └── eval-runner.js           #    评估运行器
+├── skills/                       # 📚 可复用技能库
+│   └── web-harness/             #    框架内置技能
+│       ├── agents/              #    Agent 定义引用
+│       ├── commands/           #    命令模板
+│       └── skills/             #    其他技能（manual等）
 ├── docs/                         # 📖 项目文档
-│   ├── README.md                 #    项目概览（自动生成）
-│   ├── STATE-MACHINE.md          #    状态机说明
-│   ├── EVALUATION-CRITERIA.md    #    评估标准
-│   ├── VERIFICATION-GATES.md     #    验证门禁规则
-│   └── MONITORING.md             #    监控方案
+│   ├── STATE-MACHINE.md         #    状态机说明（含11状态）
+│   ├── README.md                 #    文档中心索引
+│   ├── specs/                   #    功能规格书
+│   │   └── SPEC-TEMPLATE.md     #    ⭐ TDD 测试计划模板
+│   └── api/                     #    API 规范
+│       └── API-TEMPLATE.yaml    #    OpenAPI 3.0 模板
 ├── scripts/                      # ⚙️ 自动化脚本
-│   ├── setup.sh                  #    环境初始化
-│   ├── health-check.sh           #    健康检查
-│   ├── run-eval.sh               #    执行评估
-│   └── verify-gate.sh            #    门禁检查
-├── tests/                        # 🧪 测试基础设施
-│   ├── conftest.py               #    pytest 配置
-│   ├── e2e/                      #    E2E 测试占位
-│   └── unit/                     #    单元测试占位
-└── .github/                      # 🔄 CI/CD（可选）
-    └── workflows/
-        └── ci.yml                #    CI 流水线模板
+│   ├── setup.sh                 #    环境初始化
+│   ├── health-check.sh          #    健康检查
+│   ├── deploy-test.sh           #    测试环境部署
+│   ├── deploy-prod.sh           #    生产部署
+│   ├── rollback.sh              #    版本回滚
+│   └── run-eval.sh              #    执行评估
+├── hooks/                        # 🪝 Git 钩子
+│   ├── pre-commit               #    提交前检查
+│   ├── commit-msg               #    提交信息验证
+│   └── pre-push                 #    推送前检查
+└── tests/                        # 🧪 测试基础设施
+    └── unit/
+        └── test-skeleton.test.ts
 ```
 
 ---
 
 ## 详细设计参考
 
-以下各模块的具体内容定义在对应的 reference 文件中。生成时必须读取这些参考文件并填充到目标项目中。
+以下各模块的具体内容定义在对应的文件中。生成时必须读取这些参考文件并填充到目标项目中。
 
 ### Agent 角色体系
 
-参见 [`references/agents.md`](references/agents.md)
+参见 [`agents/`](agents/) 目录
 
-包含 6 个角色的：
+包含 7 个角色的：
 - 身份定位与职责边界
 - 核心技能清单（每个角色 5-8 项）
 - 输入/输出契约
@@ -143,10 +148,10 @@ agent_created: true
 
 ### 状态机工作流
 
-参见 [`references/state-machine.md`](references/state-machine.md)
+参见 [`docs/STATE-MACHINE.md`](docs/STATE-MACHINE.md)
 
 包含：
-- 完整的状态定义（**IDEA → PLAN → TEST-PLAN → CODE → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR**）
+- 完整的状态定义（**IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR**）
 - **TEST-PLAN**：测试用例骨架输出（Coder + Tester 联合输出）
 - **REVIEW**：代码评审（Reviewer Agent 执行）
 - **DEPLOY-TEST**：默认部署到测试环境
@@ -156,79 +161,71 @@ agent_created: true
 - 角色在各状态下的权责
 - 异常回退策略
 - Mermaid 图定义
-- **环境配置规范**（test/prod 双环境）
 
 ### WebApp 评估能力
 
-参见 [`references/evaluation.md`](references/evaluation.md)
+参见 [`evals/standards.json`](evals/standards.json) 和 [`skills/web-harness/skills/evaluation.md`](skills/web-harness/skills/evaluation.md)
 
 针对 Web 应用的多维评估体系：
 - **功能正确性**：用户故事覆盖、API 契约验证
 - **UI/UX 质量**：响应式布局、可访问性(a11y)、交互流畅度
-- **性能指标**：LCP/FID/CLS/Core Web Vitals、包体积、 hydration
+- **性能指标**：LCP/FID/CLS/Core Web Vitals、包体积
 - **安全性**：XSS/CSRF/CORS/认证鉴权
 - **代码质量**：复杂度、覆盖率、技术债
 - **评分模型**：0-100 分制 + 等级判定
 
 ### 验证机制
 
-参见 [`references/verification.md`](references/verification.md)
+参见 [`rules/agent-dispatch.md`](rules/agent-dispatch.md) 和 [`skills/web-harness/commands/verification.md`](skills/web-harness/commands/verification.md)
 
 多层质量门禁：
 - **Commit 级**：lint + format + unit test（TDD GREEN 验证）
 - **TEST-PLAN 级**：测试用例骨架评审
 - **REVIEW 级**：代码 Review（Reviewer Agent 执行，BLOCK 机制）
 - **DEPLOY-TEST 级**：测试环境 Health Check + Smoke Test
-- **TEST-RUN 级**：全量 E2E + 安全扫描 + review
+- **TEST-RUN 级**：全量 E2E + 安全扫描
 - **DEPLOY-PROD 级**：生产发布门禁（灰度/回滚策略 + PM 审批）
-- **门禁规则引擎**：PASS/WARN/BLOCK 判定逻辑
-- **环境分离**：测试环境（默认）+ 生产环境（显式触发）
+- **Agent 分派规则**：主 Agent 只分派不执行
 
 ### 监控机制
 
-参见 [`references/monitoring.md`](references/monitoring.md)
+参见 [`skills/web-harness/commands/monitoring.md`](skills/web-harness/commands/monitoring.md)
 
 全方位运行监控：
 - **应用层**：health endpoint、error tracking、latency p99
 - **基础设施层**：CPU/内存/磁盘/网络
 - **业务层**：DAU/转化率/错误率
 - **告警规则**：分级告警（info/warn/critical）
-- **Dashboard 模板**：关键指标面板
 
 ### 使用手册
 
-参见 [`references/manual.md`](references/manual.md)
+参见 [`skills/web-harness/skills/manual.md`](skills/web-harness/skills/manual.md)
 
 面向团队成员的操作指南：
 - 快速启动（5 分钟上手）
 - 日常工作流（开发/提测/发布/排查问题）
 - Agent 协作模式（如何发起多 agent 任务）
 - 自定义扩展（添加新 agent/新技能/新门禁）
-- 故障排查 FAQ
 
 ### 记忆系统
 
-参见 [`references/memory.md`](references/memory.md)
+参见 [`memory/`](memory/) 目录和 [`skills/web-harness/commands/memory.md`](skills/web-harness/commands/memory.md)
 
 三层跨会话记忆架构：
-- **L1 会话记忆**：实时任务快照、checkpoint、中断恢复状态（`.memory/sessions/`）
-- **L2 项目记忆**：配置、决策日志、技术债、Agent 表现（`.memory/*.json`）
-- **L3 经验记忆**：跨项目通用经验、反模式清单、选型经验（`~/.webharness/MEMORY.md`）
-
-支持：自动保存 / 会话恢复 / 原子写入 / 敏感信息过滤
+- **L1 会话记忆**：实时任务快照、checkpoint、中断恢复状态
+- **L2 项目记忆**：配置、决策日志、技术债、Agent 表现
+- **L3 经验记忆**：跨项目通用经验、反模式清单
 
 ### 团队引擎 (build-team)
 
-参见 [`references/team-engine.md`](references/team-engine.md)
+参见 [`skills/web-harness/commands/team-engine.md`](skills/web-harness/commands/team-engine.md)
 
 多 Agent 编排核心能力：
-- `build-team start` — 组建 6 人团队，启动 Feature 开发
+- `build-team start` — 组建团队，启动 Feature 开发
 - `build-team status` — 查看团队健康度与各 Agent 状态
-- `build-team restart` — 从 checkpoint 恢复卡住的任务
-- `build-team pause/resume` — 优雅暂停与恢复
-- `build-team stop` — 停止团队并归档
+- `build-team dispatch` — 分派任务给指定 Agent
+- `build-team checkpoint` — 创建检查点
 - 支持 3 种协作模式：流水线 / 扇出扇入 / Review 循环
-- 内置事件总线（Event Bus）解耦 Agent 通信
 
 ---
 
