@@ -6,13 +6,17 @@
 
 ```
 rules/
-├── .eslintrc.json      # ESLint 代码检查配置
-├── .prettierrc.json   # Prettier 代码格式化配置
-├── .prettierignore    # Prettier 忽略文件
-├── tsconfig.json      # TypeScript 主配置（严格模式）
-├── tsconfig.test.json # TypeScript 测试配置
-├── agent-dispatch.md  # ⭐ Agent 分派规则（核心行为约束）
-└── README.md          # 本文件
+├── state-machine.md      # ⭐ 状态机工作流（11 状态定义）
+├── agent-dispatch.md     # ⭐ Agent 分派规则（核心行为约束）
+├── memory-system.md      # 三层记忆系统规范
+├── monitoring.md         # 监控与告警规则
+├── verification-gates.md # 质量门禁规则
+├── .eslintrc.json        # ESLint 代码检查配置
+├── .prettierrc.json      # Prettier 代码格式化配置
+├── .prettierignore       # Prettier 忽略文件
+├── tsconfig.json         # TypeScript 主配置（严格模式）
+├── tsconfig.test.json    # TypeScript 测试配置
+└── README.md             # 本文件
 ```
 
 ## 使用方法

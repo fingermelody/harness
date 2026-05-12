@@ -56,13 +56,12 @@ harness/
 │   ├── install.sh              #    一键安装脚本
 │   └── README.md
 │
-├── docs/                        # 📚 文档中心
-│   ├── STATE-MACHINE.md        #    状态机工作流（核心）
-│   ├── README.md               #    文档索引
-│   ├── specs/                  #    功能规格书（Spec）
-│   │   └── SPEC-TEMPLATE.md   #    ⭐ TDD 测试计划模板
-│   └── api/                    #    API 规范
-│       └── API-TEMPLATE.yaml  #    OpenAPI 3.0 模板
+├── skills/                      # 📋 技能模板
+│   ├── web-harness-init.md     #    框架初始化技能
+│   ├── workflow-engine.md      #    状态机执行技能
+│   ├── eval-webapp.md          #    质量评估技能
+│   ├── SPEC-TEMPLATE.md        #    ⭐ 功能规格模板（TDD）
+│   └── API-TEMPLATE.yaml       #    OpenAPI 3.0 模板
 │
 ├── tests/                       # 🧪 测试套件
 │   └── unit/
@@ -72,7 +71,7 @@ harness/
 └── package.json
 ```
 
-## 状态机（11 状态）
+## 状态机（11 状态）：详见 `rules/state-machine.md`
 
 ```
 IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR → ARCHIVE
