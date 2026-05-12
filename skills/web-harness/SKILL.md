@@ -151,7 +151,7 @@ agent_created: true
 
 ### 状态机工作流
 
-参见 [`docs/STATE-MACHINE.md`](docs/STATE-MACHINE.md)
+参见 [`rules/state-machine.md`](../rules/state-machine.md)
 
 包含：
 - 完整的状态定义（**IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR**）
@@ -167,7 +167,7 @@ agent_created: true
 
 ### WebApp 评估能力
 
-参见 [`evals/standards.json`](evals/standards.json) 和 [`skills/web-harness/skills/evaluation.md`](skills/web-harness/skills/evaluation.md)
+参见 [`evals/standards.json`](../evals/standards.json) 和 [`skills/evals/evaluation.md`](../skills/evals/evaluation.md)
 
 针对 Web 应用的多维评估体系：
 - **功能正确性**：用户故事覆盖、API 契约验证
@@ -202,7 +202,7 @@ agent_created: true
 
 ### 使用手册
 
-参见 [`skills/web-harness/skills/manual.md`](skills/web-harness/skills/manual.md)
+参见 [`skills/manual/manual.md`](../skills/manual/manual.md)
 
 面向团队成员的操作指南：
 - 快速启动（5 分钟上手）
@@ -212,7 +212,7 @@ agent_created: true
 
 ### 记忆系统
 
-参见 [`memory/`](memory/) 目录和 [`rules/memory-system.md`](rules/memory-system.md)
+参见 [`memory/`](../memory/) 目录和 [`rules/memory-system.md`](../rules/memory-system.md)
 
 三层跨会话记忆架构：
 - **L1 会话记忆**：实时任务快照、checkpoint、中断恢复状态

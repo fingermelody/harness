@@ -56,12 +56,15 @@ harness/
 │   ├── install.sh              #    一键安装脚本
 │   └── README.md
 │
-├── skills/                      # 📋 技能模板
-│   ├── web-harness-init.md     #    框架初始化技能
-│   ├── workflow-engine.md      #    状态机执行技能
-│   ├── eval-webapp.md          #    质量评估技能
-│   ├── SPEC-TEMPLATE.md        #    ⭐ 功能规格模板（TDD）
-│   └── API-TEMPLATE.yaml       #    OpenAPI 3.0 模板
+├── docs/                         # 📚 文档中心
+│   ├── SPEC-TEMPLATE.md          #    ⭐ 功能规格模板（TDD）
+│   ├── api/
+│   │   └── API-TEMPLATE.yaml     #    OpenAPI 3.0 模板
+│   └── README.md                 #    文档索引
+│
+├── skills/                       # 📋 技能包
+│   └── web-harness/              #    ⭐ WebHarness 核心技能
+│       └── SKILL.md             #    主技能入口
 │
 ├── tests/                       # 🧪 测试套件
 │   └── unit/
