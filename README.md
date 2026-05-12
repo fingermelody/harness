@@ -71,6 +71,8 @@ harness/
 │       └── test-skeleton.test.ts
 │
 ├── vitest.config.ts            # Vitest 配置
+├── install.sh                 # ⭐ 一键安装脚本（部署到任意 CodeBuddy 项目）
+├── uninstall.sh               # ⭐ 卸载脚本（安全删除）
 └── package.json
 ```
 
@@ -163,7 +165,23 @@ cp -r skills/web-harness ~/.workbuddy/skills/
 ./scripts/run-eval.sh
 ```
 
-### 4. Git Hooks 安装
+### 4. 一键部署到 CodeBuddy 项目
+
+```bash
+# 项目级安装（复制到目标项目）
+./install.sh /path/to/your/project
+
+# 用户级安装（安装到 ~/.workbuddy/）
+./install.sh --user
+
+# 强制覆盖已有文件
+./install.sh /path/to/project --force
+
+# 卸载（安全删除，带确认提示）
+./uninstall.sh /path/to/project
+```
+
+### 5. Git Hooks 安装
 
 ```bash
 ./hooks/install.sh
