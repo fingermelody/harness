@@ -134,29 +134,82 @@ IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN →
 
 > **分派规则**：主 Agent（Team Lead）只做任务拆解和分派，不执行具体代码/测试/部署。
 
-## 快速开始
+## Skills 使用指南
 
-### 1. 安装技能到 WorkBuddy
+### 技能清单
+
+| 技能 | 路径 | 说明 |
+|------|------|------|
+| **web-harness** | `skills/web-harness/SKILL.md` | ⭐ 核心入口：生成完整 Harness 框架 |
+| **evals** | `skills/evals/evaluation.md` | WebApp 5 维度质量评估体系 |
+| **manual** | `skills/manual/manual.md` | 团队操作指南（快速开始/日常流/FAQ） |
+
+### 方式一：在 CodeBuddy 中安装（推荐）
+
+将技能复制到 CodeBuddy 的技能目录，即可通过 `/web-harness` 命令调用：
 
 ```bash
-# 方式一：复制到 WorkBuddy 技能目录
+# 用户级安装（所有项目可用）
 cp -r skills/web-harness ~/.workbuddy/skills/
+cp -r skills/evals ~/.workbuddy/skills/
+cp -r skills/manual ~/.workbuddy/skills/
 
-# 方式二：直接使用本仓库作为工作空间
-# 在 WorkBuddy 中打开本目录即可
+# 或使用一键安装脚本
+./install.sh --user
 ```
 
-### 2. 初始化新项目
-
-在工作 Buddy 中输入：
+安装后，在 CodeBuddy 对话中输入：
 
 ```
-初始化一个 web 项目，使用 harness 框架，tech_stack 是 react + fastapi
+/web-harness
+初始化一个 web 项目，tech_stack 是 react + fastapi
 ```
 
-将自动生成包含以上完整目录结构的框架。
+### 方式二：项目级安装
 
-### 3. 本地开发
+将技能复制到目标项目的 `.workbuddy/skills/` 目录，仅该项目可用：
+
+```bash
+./install.sh /path/to/your/project
+```
+
+### 方式三：直接引用（无需安装）
+
+在 CodeBuddy 中打开本仓库作为工作空间，技能会自动被识别。
+
+### 技能触发词
+
+| 触发词 | 激活技能 |
+|--------|----------|
+| `新建工程` `初始化框架` `生成 harness` | web-harness |
+| `webapp 框架` `项目脚手架` `多 agent 协作` | web-harness |
+| `build-team` `组建团队` | web-harness |
+| `质量评估` `评估体系` `eval` | evals |
+| `使用手册` `操作指南` `如何使用` | manual |
+
+### 自定义技能
+
+在 `skills/` 目录下创建新的子目录和 `SKILL.md` 即可扩展：
+
+```
+skills/
+└── my-custom-skill/
+    └── SKILL.md      # 技能定义文件（必须）
+```
+
+SKILL.md 格式参考 `skills/web-harness/SKILL.md`，核心字段：
+
+```yaml
+---
+name: my-custom-skill
+description: 技能描述和触发词
+agent_created: true        # 标记为 Agent 创建的技能
+---
+# 技能标题
+## 概述 / 何时使用 / 使用方式 / 注意事项
+```
+
+## 本地开发
 
 ```bash
 # 初始化环境
@@ -178,23 +231,7 @@ cp -r skills/web-harness ~/.workbuddy/skills/
 ./scripts/run-eval.sh
 ```
 
-### 4. 一键部署到 CodeBuddy 项目
-
-```bash
-# 项目级安装（复制到目标项目）
-./install.sh /path/to/your/project
-
-# 用户级安装（安装到 ~/.workbuddy/）
-./install.sh --user
-
-# 强制覆盖已有文件
-./install.sh /path/to/project --force
-
-# 卸载（安全删除，带确认提示）
-./uninstall.sh /path/to/project
-```
-
-### 5. Git Hooks 安装
+## Git Hooks 安装
 
 ```bash
 ./hooks/install.sh
