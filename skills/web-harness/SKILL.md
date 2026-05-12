@@ -101,11 +101,14 @@ agent_created: true
 │   ├── standards.json           #    评估标准（4维度）
 │   ├── baseline.json            #    基线指标
 │   └── eval-runner.js           #    评估运行器
-├── skills/                       # 📚 可复用技能库
-│   └── web-harness/             #    框架内置技能
-│       ├── agents/              #    Agent 定义引用
-│       ├── commands/           #    命令模板
-│       └── skills/             #    其他技能（manual等）
+├── rules/                        # 📐 规则与规范
+│   ├── agent-dispatch.md         #    ⭐ Agent 分派规则（主 Agent 只分派不执行）
+│   ├── memory-system.md         #    三层记忆系统规则
+│   ├── monitoring.md            #    监控与告警规则
+│   ├── verification-gates.md    #    质量门禁规则
+│   ├── .eslintrc.json            #    ESLint 配置
+│   ├── .prettierrc.json          #    Prettier 配置
+│   └── tsconfig.json             #    TypeScript 配置
 ├── docs/                         # 📖 项目文档
 │   ├── STATE-MACHINE.md         #    状态机说明（含11状态）
 │   ├── README.md                 #    文档中心索引
@@ -176,7 +179,7 @@ agent_created: true
 
 ### 验证机制
 
-参见 [`rules/agent-dispatch.md`](rules/agent-dispatch.md) 和 [`skills/web-harness/commands/verification.md`](skills/web-harness/commands/verification.md)
+参见 [`rules/agent-dispatch.md`](rules/agent-dispatch.md) 和 [`rules/verification-gates.md`](rules/verification-gates.md)
 
 多层质量门禁：
 - **Commit 级**：lint + format + unit test（TDD GREEN 验证）
@@ -189,7 +192,7 @@ agent_created: true
 
 ### 监控机制
 
-参见 [`skills/web-harness/commands/monitoring.md`](skills/web-harness/commands/monitoring.md)
+参见 [`rules/monitoring.md`](rules/monitoring.md)
 
 全方位运行监控：
 - **应用层**：health endpoint、error tracking、latency p99
@@ -209,7 +212,7 @@ agent_created: true
 
 ### 记忆系统
 
-参见 [`memory/`](memory/) 目录和 [`skills/web-harness/commands/memory.md`](skills/web-harness/commands/memory.md)
+参见 [`memory/`](memory/) 目录和 [`rules/memory-system.md`](rules/memory-system.md)
 
 三层跨会话记忆架构：
 - **L1 会话记忆**：实时任务快照、checkpoint、中断恢复状态
@@ -218,13 +221,13 @@ agent_created: true
 
 ### 团队引擎 (build-team)
 
-参见 [`skills/web-harness/commands/team-engine.md`](skills/web-harness/commands/team-engine.md)
+内置于 WebHarness 核心能力，详见 `agents/planner.md` 和 `agents/pm.md`
 
 多 Agent 编排核心能力：
-- `build-team start` — 组建团队，启动 Feature 开发
-- `build-team status` — 查看团队健康度与各 Agent 状态
-- `build-team dispatch` — 分派任务给指定 Agent
-- `build-team checkpoint` — 创建检查点
+- `web-harness init` — 初始化项目 + 组建团队
+- `web-harness status` — 查看团队健康度与各 Agent 状态
+- `web-harness dispatch` — 分派任务给指定 Agent
+- `web-harness checkpoint` — 创建检查点
 - 支持 3 种协作模式：流水线 / 扇出扇入 / Review 循环
 
 ---
