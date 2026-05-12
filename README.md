@@ -149,7 +149,7 @@ IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN →
 将技能复制到 CodeBuddy 的技能目录，即可通过 `/web-harness` 命令调用：
 
 ```bash
-# 用户级安装（所有项目可用）
+# 用户级安装（所有项目可用）— 安装到 ~/.workbuddy/skills/
 cp -r skills/web-harness ~/.workbuddy/skills/
 cp -r skills/evals ~/.workbuddy/skills/
 cp -r skills/manual ~/.workbuddy/skills/
@@ -167,10 +167,11 @@ cp -r skills/manual ~/.workbuddy/skills/
 
 ### 方式二：项目级安装
 
-将技能复制到目标项目的 `.workbuddy/skills/` 目录，仅该项目可用：
+将文件复制到目标项目的 `.codebuddy/` 目录，仅该项目可用：
 
 ```bash
 ./install.sh /path/to/your/project
+# 文件将安装到 /path/to/your/project/.codebuddy/ 下
 ```
 
 ### 方式三：直接引用（无需安装）
