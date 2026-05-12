@@ -28,3 +28,4 @@ _skillhub_meta.json
 
 # Package archives (can be regenerated)
 web-harness.zip
+.agents/
