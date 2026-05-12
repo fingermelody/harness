@@ -15,17 +15,36 @@
 
 ```
 harness/
-├── skills/web-harness/         # ⭐ 核心技能包（WorkBuddy 可直接安装）
-│   ├── SKILL.md                #    主技能入口
-│   ├── assets/                 #    静态资源
-│   └── references/              #    7 份参考文档（状态机/评估/记忆等）
+├── codebuddy.md                # ⭐ Karpathy 4条编码原则
+├── install.sh                  # ⭐ 一键安装脚本（部署到任意 CodeBuddy 项目）
+├── uninstall.sh                # ⭐ 卸载脚本（安全删除）
 │
 ├── rules/                       # 📐 规则与规范
+│   ├── state-machine.md        #    ⭐ 状态机（11状态）
 │   ├── agent-dispatch.md       #    ⭐ Agent 分派规则（核心约束）
+│   ├── memory-system.md        #    三层记忆系统规则
+│   ├── monitoring.md           #    监控与告警规则
+│   ├── verification-gates.md   #    质量门禁规则
 │   ├── .eslintrc.json          #    ESLint 配置
 │   ├── .prettierrc.json        #    Prettier 配置
-│   ├── tsconfig.json            #    TypeScript 严格模式
-│   └── tsconfig.test.json       #    测试配置
+│   └── tsconfig.json           #    TypeScript 严格模式
+│
+├── agents/                      # 🤖 Agent 角色定义（7个）
+│   ├── pm.md                   #    项目管理者
+│   ├── planner.md              #    架构规划师
+│   ├── coder.md                #    核心开发者
+│   ├── reviewer.md             #    代码评审师
+│   ├── tester.md               #    测试专家
+│   ├── evaluator.md            #    质量评估师
+│   └── deployer.md             #    部署工程师
+│
+├── skills/                      # 📋 技能包
+│   ├── web-harness/            #    ⭐ 核心技能包
+│   │   └── SKILL.md            #      主技能入口
+│   ├── evals/                  #    评估技能
+│   │   └── evaluation.md       #      WebApp 5维度评估体系
+│   └── manual/                 #    使用手册技能
+│       └── manual.md           #      团队操作指南
 │
 ├── memory/                      # 🧠 记忆系统
 │   ├── config.json             #    配置（retention/sync）
@@ -34,7 +53,7 @@ harness/
 │   └── README.md
 │
 ├── evals/                       # 📊 评估体系
-│   ├── standards.json          #    4 维度评估标准
+│   ├── standards.json          #    5 维度评估标准
 │   ├── baseline.json           #    基线指标
 │   ├── eval-runner.js          #    评估运行器
 │   └── README.md
@@ -56,23 +75,17 @@ harness/
 │   ├── install.sh              #    一键安装脚本
 │   └── README.md
 │
-├── docs/                         # 📚 文档中心
-│   ├── SPEC-TEMPLATE.md          #    ⭐ 功能规格模板（TDD）
-│   ├── api/
-│   │   └── API-TEMPLATE.yaml     #    OpenAPI 3.0 模板
-│   └── README.md                 #    文档索引
-│
-├── skills/                       # 📋 技能包
-│   └── web-harness/              #    ⭐ WebHarness 核心技能
-│       └── SKILL.md             #    主技能入口
+├── docs/                        # 📚 文档中心
+│   ├── specs/
+│   │   └── SPEC-TEMPLATE.md    #    ⭐ 功能规格模板（TDD）
+│   └── api/
+│       └── API-TEMPLATE.yaml   #    OpenAPI 3.0 模板
 │
 ├── tests/                       # 🧪 测试套件
 │   └── unit/
 │       └── test-skeleton.test.ts
 │
 ├── vitest.config.ts            # Vitest 配置
-├── install.sh                 # ⭐ 一键安装脚本（部署到任意 CodeBuddy 项目）
-├── uninstall.sh               # ⭐ 卸载脚本（安全删除）
 └── package.json
 ```
 
@@ -111,7 +124,7 @@ IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN →
 
 | Agent | 职责 | 在状态机中的角色 |
 |-------|------|-----------------|
-| `PM` | 需求把控、发布审批 | IDEA 主导、MONENT/DEPLOY-PROD 审批 |
+| `PM` | 需求把控、发布审批 | IDEA 主导、MONITOR/DEPLOY-PROD 审批 |
 | `Planner` | 技术方案、任务拆解 | PLAN 主导 |
 | `Coder` | 代码实现（TDD） | CODE 主导 |
 | `Reviewer` | 代码审查 | REVIEW 主导 |
