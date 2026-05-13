@@ -52,30 +52,44 @@ while [[ $# -gt 0 ]]; do
 done
 
 # 确定目标目录
+# 项目级：从 目标项目/.codebuddy/ 卸载
+# 用户级：从 ~/.workbuddy/ 卸载
 if [ "$INSTALL_MODE" = "user" ]; then
     TARGET_DIR="$HOME/.workbuddy"
+    UNINSTALL_DIR="$TARGET_DIR"
 elif [ -z "$TARGET_DIR" ]; then
     TARGET_DIR="$(pwd)"
+    UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
+else
+    TARGET_DIR="$1"
+    UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
 fi
 
 # 规范化路径
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
+UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
+
+# 用户级模式直接从 ~/.workbuddy 删除
+if [ "$INSTALL_MODE" = "user" ]; then
+    UNINSTALL_DIR="$TARGET_DIR"
+fi
 
 echo -e "${BLUE}============================================${NC}"
 echo -e "${BLUE}  WebHarness 卸载脚本${NC}"
 echo -e "${BLUE}============================================${NC}"
 echo ""
 
-echo -e "${GREEN}目标目录:${NC} $TARGET_DIR"
+echo -e "${GREEN}项目目录:${NC} $TARGET_DIR"
+echo -e "${GREEN}卸载目标:${NC} $UNINSTALL_DIR"
 echo -e "${GREEN}卸载模式:${NC} $INSTALL_MODE"
 echo ""
 
 # 检查是否存在 harness 文件
-if [ ! -d "$TARGET_DIR/rules" ] && [ ! -d "$TARGET_DIR/agents" ]; then
+if [ ! -d "$UNINSTALL_DIR/rules" ] && [ ! -d "$UNINSTALL_DIR/agents" ]; then
     echo -e "${YELLOW}警告: 目标目录中未找到 Harness 安装痕迹${NC}"
-    echo "以下目录不存在: rules/, agents/"
+    echo "以下目录不存在: $UNINSTALL_DIR/rules/, $UNINSTALL_DIR/agents/"
     echo ""
-    read -p "是否仍要删除 .workbuddy 目录? [y/N] " -n 1 -r
+    read -p "是否仍要删除 .codebuddy 目录? [y/N] " -n 1 -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "卸载已取消"
@@ -85,7 +99,7 @@ fi
 
 # 确认删除
 if [ "$FORCE_DELETE" = false ]; then
-    echo -e "${RED}警告: 即将删除以下内容:${NC}"
+    echo -e "${RED}警告: 即将删除 ${UNINSTALL_DIR} 下的以下内容:${NC}"
     echo ""
     echo "  ├── rules/              # 规则与规范"
     echo "  ├── agents/             # Agent 角色定义"
@@ -95,9 +109,7 @@ if [ "$FORCE_DELETE" = false ]; then
     echo "  ├── scripts/            # 自动化脚本"
     echo "  ├── hooks/              # Git 钩子"
     echo "  ├── skills/             # 技能包"
-    echo "  ├── tests/              # 测试基础设施"
-    echo "  ├── .workbuddy/         # 工作记忆"
-    echo "  └── README.md           # 项目说明（如由 Harness 生成）"
+    echo "  └── tests/              # 测试基础设施"
     echo ""
     echo -e "${RED}此操作不可撤销!${NC}"
     echo ""
@@ -127,75 +139,70 @@ remove_item() {
 }
 
 # 1. 删除规则与规范
-if [ -d "$TARGET_DIR/rules" ]; then
-    echo -e "${BLUE}[1/10] 删除规则与规范...${NC}"
-    remove_item "$TARGET_DIR/rules"
+if [ -d "$UNINSTALL_DIR/rules" ]; then
+    echo -e "${BLUE}[1/9] 删除规则与规范...${NC}"
+    remove_item "$UNINSTALL_DIR/rules"
 fi
 
 # 2. 删除 Agent 角色定义
-if [ -d "$TARGET_DIR/agents" ]; then
-    echo -e "${BLUE}[2/10] 删除 Agent 角色定义...${NC}"
-    remove_item "$TARGET_DIR/agents"
+if [ -d "$UNINSTALL_DIR/agents" ]; then
+    echo -e "${BLUE}[2/9] 删除 Agent 角色定义...${NC}"
+    remove_item "$UNINSTALL_DIR/agents"
 fi
 
 # 3. 删除评估体系
-if [ -d "$TARGET_DIR/evals" ]; then
-    echo -e "${BLUE}[3/10] 删除评估体系...${NC}"
-    remove_item "$TARGET_DIR/evals"
+if [ -d "$UNINSTALL_DIR/evals" ]; then
+    echo -e "${BLUE}[3/9] 删除评估体系...${NC}"
+    remove_item "$UNINSTALL_DIR/evals"
 fi
 
 # 4. 删除记忆系统
-if [ -d "$TARGET_DIR/memory" ]; then
-    echo -e "${BLUE}[4/10] 删除记忆系统...${NC}"
-    remove_item "$TARGET_DIR/memory"
+if [ -d "$UNINSTALL_DIR/memory" ]; then
+    echo -e "${BLUE}[4/9] 删除记忆系统...${NC}"
+    remove_item "$UNINSTALL_DIR/memory"
 fi
 
 # 5. 删除文档模板
-if [ -d "$TARGET_DIR/docs" ]; then
-    echo -e "${BLUE}[5/10] 删除文档模板...${NC}"
-    remove_item "$TARGET_DIR/docs"
+if [ -d "$UNINSTALL_DIR/docs" ]; then
+    echo -e "${BLUE}[5/9] 删除文档模板...${NC}"
+    remove_item "$UNINSTALL_DIR/docs"
 fi
 
 # 6. 删除自动化脚本
-if [ -d "$TARGET_DIR/scripts" ]; then
-    echo -e "${BLUE}[6/10] 删除自动化脚本...${NC}"
-    remove_item "$TARGET_DIR/scripts"
+if [ -d "$UNINSTALL_DIR/scripts" ]; then
+    echo -e "${BLUE}[6/9] 删除自动化脚本...${NC}"
+    remove_item "$UNINSTALL_DIR/scripts"
 fi
 
 # 7. 删除 Git 钩子
-if [ -d "$TARGET_DIR/hooks" ]; then
-    echo -e "${BLUE}[7/10] 删除 Git 钩子...${NC}"
-    remove_item "$TARGET_DIR/hooks"
+if [ -d "$UNINSTALL_DIR/hooks" ]; then
+    echo -e "${BLUE}[7/9] 删除 Git 钩子...${NC}"
+    remove_item "$UNINSTALL_DIR/hooks"
 fi
 
 # 8. 删除技能包
-if [ -d "$TARGET_DIR/skills" ] && [ "$INSTALL_MODE" != "user" ]; then
-    echo -e "${BLUE}[8/10] 删除技能包...${NC}"
-    remove_item "$TARGET_DIR/skills"
+if [ -d "$UNINSTALL_DIR/skills" ]; then
+    echo -e "${BLUE}[8/9] 删除技能包...${NC}"
+    remove_item "$UNINSTALL_DIR/skills"
 fi
 
 # 9. 删除测试基础设施
-if [ -d "$TARGET_DIR/tests" ]; then
-    echo -e "${BLUE}[9/10] 删除测试基础设施...${NC}"
-    remove_item "$TARGET_DIR/tests"
+if [ -d "$UNINSTALL_DIR/tests" ]; then
+    echo -e "${BLUE}[9/9] 删除测试基础设施...${NC}"
+    remove_item "$UNINSTALL_DIR/tests"
 fi
 
-# 10. 删除配置文件
-echo -e "${BLUE}[10/10] 删除配置文件...${NC}"
-for file in vitest.config.ts package.json README.md .gitignore; do
-    if [ -f "$TARGET_DIR/$file" ]; then
-        # 检查是否是 Harness 生成的文件
-        if grep -q "WebHarness\|harness" "$TARGET_DIR/$file" 2>/dev/null; then
-            remove_item "$TARGET_DIR/$file"
-        fi
+# 删除 .codebuddy 目录（如果为空）
+echo ""
+if [ "$INSTALL_MODE" = "project" ] && [ -d "$TARGET_DIR/.codebuddy" ]; then
+    # 检查是否为空
+    remaining=$(ls -A "$TARGET_DIR/.codebuddy" 2>/dev/null)
+    if [ -z "$remaining" ]; then
+        remove_item "$TARGET_DIR/.codebuddy"
+        echo -e "${GREEN}✓ 已删除空的 .codebuddy/ 目录${NC}"
+    else
+        echo -e "${YELLOW}.codebuddy/ 目录非空，保留目录${NC}"
     fi
-done
-
-# 删除 .workbuddy 目录
-if [ -d "$TARGET_DIR/.workbuddy" ]; then
-    echo ""
-    echo -e "${YELLOW}删除 .workbuddy 目录...${NC}"
-    remove_item "$TARGET_DIR/.workbuddy"
 fi
 
 echo ""
@@ -203,9 +210,9 @@ echo -e "${GREEN}============================================${NC}"
 echo -e "${GREEN}  卸载完成!${NC}"
 echo -e "${GREEN}============================================${NC}"
 echo ""
-echo -e "目标目录: ${BLUE}$TARGET_DIR${NC}"
+echo -e "卸载目标: ${BLUE}$UNINSTALL_DIR${NC}"
 echo ""
 echo "注意:"
-echo "  - Git 历史记录未删除（如需完全删除，请手动删除 .git 目录）"
+echo "  - 项目级安装仅删除 .codebuddy/ 下的 Harness 文件"
 echo "  - 如果是 --user 模式，全局技能已从 ~/.workbuddy/ 移除"
 echo ""

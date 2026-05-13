@@ -53,6 +53,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # 确定目标目录
+# 项目级：安装到 目标项目/.codebuddy/
+# 用户级：安装到 ~/.workbuddy/skills/
 if [ "$INSTALL_MODE" = "user" ]; then
     TARGET_DIR="$HOME/.workbuddy"
 elif [ -z "$TARGET_DIR" ]; then
@@ -61,6 +63,13 @@ fi
 
 # 规范化路径
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
+
+# 项目级安装的实际目标：.codebuddy/
+if [ "$INSTALL_MODE" = "project" ]; then
+    DEST_DIR="$TARGET_DIR/.codebuddy"
+else
+    DEST_DIR="$TARGET_DIR"
+fi
 
 echo -e "${BLUE}============================================${NC}"
 echo -e "${BLUE}  WebHarness 安装脚本${NC}"
@@ -75,7 +84,8 @@ if [ ! -d "$HARNESS_SOURCE/rules" ] || [ ! -f "$HARNESS_SOURCE/skills/web-harnes
 fi
 
 echo -e "${GREEN}源目录:${NC} $HARNESS_SOURCE"
-echo -e "${GREEN}目标目录:${NC} $TARGET_DIR"
+echo -e "${GREEN}项目目录:${NC} $TARGET_DIR"
+echo -e "${GREEN}安装目标:${NC} $DEST_DIR"
 echo -e "${GREEN}安装模式:${NC} $INSTALL_MODE"
 echo ""
 
@@ -109,7 +119,7 @@ copy_item() {
 }
 
 # 确认安装
-echo -e "${YELLOW}即将安装以下内容到目标目录:${NC}"
+echo -e "${YELLOW}即将安装以下内容到 ${DEST_DIR}:${NC}"
 echo ""
 echo "  ├── rules/              # 规则与规范"
 echo "  ├── agents/              # Agent 角色定义"
@@ -121,7 +131,7 @@ echo "  ├── hooks/               # Git 钩子"
 echo "  ├── skills/              # 技能包"
 echo "  └── tests/               # 测试基础设施"
 echo ""
-echo -e "${YELLOW}注意: .workbuddy/ 目录将覆盖全局配置${NC}"
+echo -e "${YELLOW}注意: 项目级安装将写入 .codebuddy/ 目录${NC}"
 echo ""
 
 read -p "继续安装? [y/N] " -n 1 -r
@@ -138,100 +148,66 @@ echo ""
 # 1. 复制规则与规范
 echo -e "${BLUE}[1/8] 复制规则与规范...${NC}"
 for item in rules; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 2. 复制 Agent 角色定义
 echo -e "${BLUE}[2/8] 复制 Agent 角色定义...${NC}"
 for item in agents; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 3. 复制评估体系
 echo -e "${BLUE}[3/8] 复制评估体系...${NC}"
 for item in evals; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 4. 复制记忆系统
 echo -e "${BLUE}[4/8] 复制记忆系统...${NC}"
 for item in memory; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 5. 复制文档模板
 echo -e "${BLUE}[5/8] 复制文档模板...${NC}"
 for item in docs; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 6. 复制自动化脚本
 echo -e "${BLUE}[6/8] 复制自动化脚本...${NC}"
 for item in scripts; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 7. 复制 Git 钩子
 echo -e "${BLUE}[7/8] 复制 Git 钩子...${NC}"
 for item in hooks; do
-    copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
 # 8. 复制测试基础设施
 echo -e "${BLUE}[8/8] 复制测试基础设施...${NC}"
 for item in tests vitest.config.ts package.json; do
     if [ -e "$HARNESS_SOURCE/$item" ]; then
-        copy_item "$HARNESS_SOURCE/$item" "$TARGET_DIR/$item"
+        copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
     fi
 done
 
-# 创建 .workbuddy 目录（用于项目级记忆）
+# 创建 .codebuddy/memory 目录（用于项目级记忆）
 echo ""
-echo -e "${BLUE}创建 .workbuddy 目录...${NC}"
-mkdir -p "$TARGET_DIR/.workbuddy/memory"
-copy_item "$HARNESS_SOURCE/.workbuddy/memory" "$TARGET_DIR/.workbuddy/memory"
-
-# 创建 README.md（如果不存在）
-if [ ! -f "$TARGET_DIR/README.md" ]; then
-    copy_item "$HARNESS_SOURCE/README.md" "$TARGET_DIR/README.md"
-fi
-
-# Git 初始化（可选）
-echo ""
-if [ -d "$TARGET_DIR/.git" ]; then
-    echo -e "${YELLOW}Git 仓库已存在，跳过初始化${NC}"
-else
-    read -p "是否初始化 Git 仓库? [y/N] " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cd "$TARGET_DIR"
-        git init
-        git add -A
-        git commit -m "feat: 初始化 WebHarness 多智能体协作框架"
-        echo -e "${GREEN}✓ Git 仓库已初始化${NC}"
-    fi
-fi
-
-# 安装 Git 钩子
-echo ""
-read -p "是否安装 Git 钩子? [y/N] " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    if [ -f "$TARGET_DIR/hooks/install.sh" ]; then
-        chmod +x "$TARGET_DIR/hooks/install.sh"
-        "$TARGET_DIR/hooks/install.sh"
-    fi
-fi
+echo -e "${BLUE}创建 .codebuddy/memory 目录...${NC}"
+mkdir -p "$DEST_DIR/memory"
 
 echo ""
 echo -e "${GREEN}============================================${NC}"
 echo -e "${GREEN}  安装完成!${NC}"
 echo -e "${GREEN}============================================${NC}"
 echo ""
-echo -e "目标目录: ${BLUE}$TARGET_DIR${NC}"
+echo -e "安装目标: ${BLUE}$DEST_DIR${NC}"
 echo ""
 echo "下一步:"
-echo "  1. 查看 README.md 了解框架使用方式"
-echo "  2. 运行 ./scripts/setup.sh 初始化开发环境"
-echo "  3. 使用 harness skill 初始化新项目"
+echo "  1. 在 CodeBuddy 中打开目标项目"
+echo "  2. 使用 /web-harness 初始化新项目"
 echo ""
