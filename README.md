@@ -144,18 +144,13 @@ IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN →
 | **evals** | `skills/evals/evaluation.md` | WebApp 5 维度质量评估体系 |
 | **manual** | `skills/manual/manual.md` | 团队操作指南（快速开始/日常流/FAQ） |
 
-### 方式一：在 CodeBuddy 中安装（推荐）
+### 方式一：项目级安装（推荐）
 
-将技能复制到 CodeBuddy 的技能目录，即可通过 `/web-harness` 命令调用：
+将文件复制到目标项目的 `.codebuddy/` 目录：
 
 ```bash
-# 用户级安装（所有项目可用）— 安装到 ~/.workbuddy/skills/
-cp -r skills/web-harness ~/.workbuddy/skills/
-cp -r skills/evals ~/.workbuddy/skills/
-cp -r skills/manual ~/.workbuddy/skills/
-
-# 或使用一键安装脚本
-./install.sh --user
+./install.sh /path/to/your/project
+# 文件将安装到 /path/to/your/project/.codebuddy/ 下
 ```
 
 安装后，在 CodeBuddy 对话中输入：
@@ -165,13 +160,18 @@ cp -r skills/manual ~/.workbuddy/skills/
 初始化一个 web 项目，tech_stack 是 react + fastapi
 ```
 
-### 方式二：项目级安装
+### 方式二：用户级安装（全局可用）
 
-将文件复制到目标项目的 `.codebuddy/` 目录，仅该项目可用：
+安装到 `~/.workbuddy/skills/`，所有项目可用：
 
 ```bash
-./install.sh /path/to/your/project
-# 文件将安装到 /path/to/your/project/.codebuddy/ 下
+# 手动复制
+cp -r skills/web-harness ~/.workbuddy/skills/
+cp -r skills/evals ~/.workbuddy/skills/
+cp -r skills/manual ~/.workbuddy/skills/
+
+# 或使用一键安装脚本
+./install.sh --user
 ```
 
 ### 方式三：直接引用（无需安装）
