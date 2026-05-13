@@ -6,7 +6,7 @@
 # 用法:
 #   ./uninstall.sh [目标目录]     # 从指定目录卸载
 #   ./uninstall.sh               # 从当前目录卸载
-#   ./uninstall.sh --user         # 卸载全局技能 (~/.workbuddy/)
+#   ./uninstall.sh --user         # 卸载全局安装 (~/.codebuddy/)
 #   ./uninstall.sh --force        # 无需确认直接删除
 #
 
@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 [目标目录] [--user] [--force] [--help]"
             echo ""
             echo "选项:"
-            echo "  --user      卸载全局技能 (~/.workbuddy/)"
+            echo "  --user      卸载全局安装 (~/.codebuddy/)"
             echo "  --force     无需确认直接删除"
             echo "  -h, --help  显示帮助信息"
             exit 0
@@ -53,26 +53,20 @@ done
 
 # 确定目标目录
 # 项目级：从 目标项目/.codebuddy/ 卸载
-# 用户级：从 ~/.workbuddy/ 卸载
+# 用户级：从 ~/.codebuddy/ 卸载
 if [ "$INSTALL_MODE" = "user" ]; then
-    TARGET_DIR="$HOME/.workbuddy"
-    UNINSTALL_DIR="$TARGET_DIR"
-elif [ -z "$TARGET_DIR" ]; then
-    TARGET_DIR="$(pwd)"
-    UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
+    TARGET_DIR="$HOME"
 else
-    TARGET_DIR="$1"
-    UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
+    if [ -z "$TARGET_DIR" ]; then
+        TARGET_DIR="$(pwd)"
+    fi
 fi
 
 # 规范化路径
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
-UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
 
-# 用户级模式直接从 ~/.workbuddy 删除
-if [ "$INSTALL_MODE" = "user" ]; then
-    UNINSTALL_DIR="$TARGET_DIR"
-fi
+# 卸载目标统一为 .codebuddy/
+UNINSTALL_DIR="$TARGET_DIR/.codebuddy"
 
 echo -e "${BLUE}============================================${NC}"
 echo -e "${BLUE}  WebHarness 卸载脚本${NC}"
@@ -194,7 +188,7 @@ fi
 
 # 删除 .codebuddy 目录（如果为空）
 echo ""
-if [ "$INSTALL_MODE" = "project" ] && [ -d "$TARGET_DIR/.codebuddy" ]; then
+if [ -d "$TARGET_DIR/.codebuddy" ]; then
     # 检查是否为空
     remaining=$(ls -A "$TARGET_DIR/.codebuddy" 2>/dev/null)
     if [ -z "$remaining" ]; then
@@ -213,6 +207,5 @@ echo ""
 echo -e "卸载目标: ${BLUE}$UNINSTALL_DIR${NC}"
 echo ""
 echo "注意:"
-echo "  - 项目级安装仅删除 .codebuddy/ 下的 Harness 文件"
-echo "  - 如果是 --user 模式，全局技能已从 ~/.workbuddy/ 移除"
+echo "  - 仅删除 .codebuddy/ 下的 Harness 文件"
 echo ""

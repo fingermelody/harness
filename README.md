@@ -162,16 +162,11 @@ IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN →
 
 ### 方式二：用户级安装（全局可用）
 
-安装到 `~/.workbuddy/skills/`，所有项目可用：
+安装到 `~/.codebuddy/`，所有项目可用：
 
 ```bash
-# 手动复制
-cp -r skills/web-harness ~/.workbuddy/skills/
-cp -r skills/evals ~/.workbuddy/skills/
-cp -r skills/manual ~/.workbuddy/skills/
-
-# 或使用一键安装脚本
 ./install.sh --user
+# 文件将安装到 ~/.codebuddy/ 下
 ```
 
 ### 方式三：直接引用（无需安装）

@@ -6,7 +6,7 @@
 # 用法:
 #   ./install.sh [目标目录]     # 安装到指定目录
 #   ./install.sh               # 安装到当前目录
-#   ./install.sh --user         # 安装到 ~/.workbuddy/（全局技能）
+#   ./install.sh --user         # 安装到 ~/.codebuddy/（全局）
 #   ./install.sh --force        # 覆盖已有文件
 #
 
@@ -40,7 +40,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 [目标目录] [--user] [--force] [--help]"
             echo ""
             echo "选项:"
-            echo "  --user      安装到 ~/.workbuddy/（作为全局技能）"
+            echo "  --user      安装到 ~/.codebuddy/（全局可用）"
             echo "  --force     覆盖已有文件"
             echo "  -h, --help  显示帮助信息"
             exit 0
@@ -54,9 +54,9 @@ done
 
 # 确定目标目录
 # 项目级：安装到 目标项目/.codebuddy/
-# 用户级：安装到 ~/.workbuddy/skills/
+# 用户级：安装到 ~/.codebuddy/
 if [ "$INSTALL_MODE" = "user" ]; then
-    TARGET_DIR="$HOME/.workbuddy"
+    TARGET_DIR="$HOME"
 elif [ -z "$TARGET_DIR" ]; then
     TARGET_DIR="$(pwd)"
 fi
@@ -64,12 +64,8 @@ fi
 # 规范化路径
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
-# 项目级安装的实际目标：.codebuddy/
-if [ "$INSTALL_MODE" = "project" ]; then
-    DEST_DIR="$TARGET_DIR/.codebuddy"
-else
-    DEST_DIR="$TARGET_DIR"
-fi
+# 安装目标统一为 .codebuddy/
+DEST_DIR="$TARGET_DIR/.codebuddy"
 
 echo -e "${BLUE}============================================${NC}"
 echo -e "${BLUE}  WebHarness 安装脚本${NC}"
@@ -131,7 +127,7 @@ echo "  ├── hooks/               # Git 钩子"
 echo "  ├── skills/              # 技能包"
 echo "  └── tests/               # 测试基础设施"
 echo ""
-echo -e "${YELLOW}注意: 项目级安装将写入 .codebuddy/ 目录${NC}"
+echo -e "${YELLOW}注意: 文件将写入 .codebuddy/ 目录${NC}"
 echo ""
 
 read -p "继续安装? [y/N] " -n 1 -r
