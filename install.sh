@@ -202,6 +202,19 @@ echo ""
 echo -e "${BLUE}创建 .codebuddy/memory 目录...${NC}"
 mkdir -p "$DEST_DIR/memory"
 
+# 10. 复制 codebuddy.md 到项目根目录
+echo -e "${BLUE}[10/10] 复制 codebuddy.md 到项目根目录...${NC}"
+if [ -f "$HARNESS_SOURCE/codebuddy.md" ]; then
+    if [ -e "$TARGET_DIR/codebuddy.md" ] && [ "$FORCE_OVERWRITE" = false ]; then
+        echo -e "${YELLOW}跳过 (已存在):${NC} codebuddy.md"
+    else
+        cp "$HARNESS_SOURCE/codebuddy.md" "$TARGET_DIR/codebuddy.md"
+        echo -e "${GREEN}✓ 安装:${NC} codebuddy.md → $TARGET_DIR/"
+    fi
+else
+    echo -e "${YELLOW}跳过 (不存在):${NC} codebuddy.md"
+fi
+
 echo ""
 echo -e "${GREEN}============================================${NC}"
 echo -e "${GREEN}  安装完成!${NC}"
