@@ -177,14 +177,20 @@ for item in scripts; do
     copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
-# 7. 复制 Git 钩子
-echo -e "${BLUE}[7/8] 复制 Git 钩子...${NC}"
+# 7. 复制技能包
+echo -e "${BLUE}[7/9] 复制技能包...${NC}"
+for item in skills; do
+    copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
+done
+
+# 8. 复制 Git 钩子
+echo -e "${BLUE}[8/9] 复制 Git 钩子...${NC}"
 for item in hooks; do
     copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
 done
 
-# 8. 复制测试基础设施
-echo -e "${BLUE}[8/8] 复制测试基础设施...${NC}"
+# 9. 复制测试基础设施
+echo -e "${BLUE}[9/9] 复制测试基础设施...${NC}"
 for item in tests vitest.config.ts package.json; do
     if [ -e "$HARNESS_SOURCE/$item" ]; then
         copy_item "$HARNESS_SOURCE/$item" "$DEST_DIR/$item"
