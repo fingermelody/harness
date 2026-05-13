@@ -14,7 +14,7 @@ agent_created: true
 
 ## 概述
 
-本技能完成 4 件事：**创建团队 → 启动状态机 → 初始化配置 → 等待用户输入**。
+本技能完成 5 件事：**创建团队 → 启动状态机 → 对接记忆文件 → 初始化配置 → 等待用户输入**。
 
 框架基于 TDD 驱动 + 测试后置 + Review 门禁，专为 WebApp 场景定制。
 
@@ -123,7 +123,59 @@ state = "IDEA"
   DEPLOY-PROD → dispatch(pm,"审批") + dispatch(deployer,"生产部署") → MONITOR
 ```
 
-### 第四步：初始化 rules + hooks 配置
+### 第四步：对接记忆文件，读取任务进度
+
+检查项目的记忆文件，判断是全新启动还是恢复中断任务：
+
+**读取路径：**
+
+```
+项目根目录/.codebuddy/memory/
+├── state.json        ← 当前工作流状态（currentState / completedSteps / tasks）
+├── decisions.log     ← 历史决策记录
+└── config.json       ← 环境配置（environment_map）
+```
+
+**判断逻辑：**
+
+```
+1. 读取 state.json
+2. if state.json.workflow.currentState != null:
+     → 有未完成任务，恢复模式
+   else:
+     → 全新启动模式
+
+恢复模式：
+  - 从 state.json.workflow.currentState 恢复状态机位置
+  - 从 state.json.tasks.inProgress 恢复进行中的任务
+  - 从 decisions.log 读取历史决策上下文
+  - 通知用户："检测到未完成任务 [X]，当前状态 [S]，是否继续？"
+
+全新启动模式：
+  - 初始化 state.json 为默认值
+  - 状态机从 IDEA 开始
+```
+
+**state.json 关键字段：**
+
+```json
+{
+  "workflow": {
+    "currentPhase": "CODE | REVIEW | ...",
+    "currentState": "IDEA → PLAN → ... 当前位置",
+    "completedSteps": ["IDEA", "PLAN", "TEST-PLAN"]
+  },
+  "tasks": {
+    "pending": ["task-id-1"],
+    "inProgress": ["task-id-2"],
+    "completed": ["task-id-3"]
+  }
+}
+```
+
+**每次状态转换时同步写入 state.json**，确保中断后可恢复。
+
+### 第五步：初始化 rules + hooks 配置
 
 将以下文件复制到目标项目的 `.codebuddy/` 目录：
 
@@ -159,7 +211,7 @@ state = "IDEA"
 cd 目标项目/.codebuddy/hooks && bash install.sh
 ```
 
-### 第五步：等待用户输入
+### 第六步：等待用户输入
 
 **⚠️ 团队就绪后必须停下来等待用户输入。**
 
