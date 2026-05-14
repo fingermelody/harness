@@ -121,11 +121,12 @@ echo "  ├── rules/              # 规则与规范"
 echo "  ├── agents/              # Agent 角色定义"
 echo "  ├── evals/               # 评估体系"
 echo "  ├── memory/              # 记忆系统"
+echo "  ├── teams/               # 团队配置（项目级）"
 echo "  ├── docs/                # 文档模板"
 echo "  ├── scripts/             # 自动化脚本"
 echo "  ├── hooks/               # Git 钩子"
 echo "  ├── skills/              # 技能包"
-echo "  └── tests/               # 测试基础设施"
+echo "  └── src/                 # 框架源代码"
 echo ""
 echo -e "${YELLOW}注意: 文件将写入 .codebuddy/ 目录${NC}"
 echo ""
@@ -199,8 +200,9 @@ done
 
 # 创建 .codebuddy/memory 目录（用于项目级记忆）
 echo ""
-echo -e "${BLUE}创建 .codebuddy/memory 目录...${NC}"
+echo -e "${BLUE}创建项目级目录...${NC}"
 mkdir -p "$DEST_DIR/memory"
+mkdir -p "$DEST_DIR/teams"
 
 # 10. 复制 codebuddy.md 到项目根目录
 echo -e "${BLUE}[10/10] 复制 codebuddy.md 到项目根目录...${NC}"

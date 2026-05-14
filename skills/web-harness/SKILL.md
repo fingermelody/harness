@@ -37,7 +37,11 @@ agent_created: true
 | `project_path` | 项目根目录 | 当前工作目录 |
 | `tech_stack` | 技术栈 | 需询问 |
 
-### 第二步：创建团队（TeamCreate）
+### 第二步：创建团队（TeamCreate）→ 项目级持久化
+
+**核心原则：团队配置属于项目，不属于用户。**
+
+#### 2.1 使用 TeamCreate 创建运行时团队
 
 使用 TeamCreate 创建团队，然后按 `agents/` 目录下的模板 spawn 7 个 Agent：
 
@@ -58,6 +62,36 @@ Spawn Agents:
 1. 读取对应的 `agents/{role}.md` 文件
 2. 提取定位、核心职责、Prompt 模板部分
 3. 组合为完整 prompt 传入 Agent
+
+#### 2.2 同步团队配置到项目级
+
+TeamCreate 运行时配置存放在 `~/.workbuddy/teams/`（平台行为，不可改）。
+创建完成后，**立即将团队配置同步到项目级目录**：
+
+```bash
+mkdir -p {project_path}/.codebuddy/teams/
+cp ~/.workbuddy/teams/harness-team/config.json {project_path}/.codebuddy/teams/harness-team.json
+```
+
+**项目级团队配置路径：**
+
+```
+项目根目录/.codebuddy/
+├── teams/
+│   └── harness-team.json    ← 团队配置（成员、角色、ID）
+├── rules/
+├── agents/
+├── hooks/
+├── ...
+```
+
+**为什么要项目级持久化：**
+- 团队配置随项目走，不依赖特定用户环境
+- 多人协作时可共享团队定义
+- 中断恢复时优先读取项目级配置
+- git 可追踪团队变更历史
+
+**恢复场景：** 当检测到 `{project_path}/.codebuddy/teams/harness-team.json` 已存在时，读取其中的成员信息，避免重复创建。
 
 ### 第三步：启动状态机
 
@@ -196,6 +230,7 @@ state = "IDEA"
 **复制方式：**
 ```
 目标项目/.codebuddy/
+├── teams/          ← 团队配置（由 Step 2.2 生成）
 ├── rules/          ← 从 harness/rules/ 复制
 ├── agents/         ← 从 harness/agents/ 复制
 ├── hooks/          ← 从 harness/hooks/ 复制
@@ -203,7 +238,7 @@ state = "IDEA"
 ├── skills/         ← 从 harness/skills/ 复制
 ├── memory/         ← 创建空目录
 ├── scripts/        ← 从 harness/scripts/ 复制
-└── tests/          ← 从 harness/tests/ 复制（如存在）
+└── src/            ← 从 harness/src/ 复制（如存在）
 ```
 
 安装 Git hooks：
@@ -235,6 +270,7 @@ cd 目标项目/.codebuddy/hooks && bash install.sh
 状态: IDEA（等待需求输入）
 
 配置已初始化:
+  ✅ teams/    — 团队配置（项目级 .codebuddy/teams/）
   ✅ rules/    — 5 个规则文件
   ✅ hooks/    — 4 个 Git 钩子（已安装）
   ✅ agents/   — 7 个角色定义
