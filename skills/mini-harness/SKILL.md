@@ -346,10 +346,11 @@ while state != "ARCHIVE":
 
 ```
 /mini-harness
-为 [项目名] 搭建多 Agent 协作框架，tech_stack 是 [技术栈]
 ```
 
 技能将：
+1. 在当前项目创建团队（TeamCreate）
+2. Spawn 7 个 Agent 角色
 1. 创建团队（TeamCreate）
 2. Spawn 7 个 Agent 角色
 3. 初始化状态机为 IDEA 状态
