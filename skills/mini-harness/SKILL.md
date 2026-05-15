@@ -338,7 +338,7 @@ while state != "ARCHIVE":
 
 ### 快速启动
 
-1. 安装此技能到 `~/.workbuddy/skills/mini-harness/`
+1. 安装此技能到项目 `.codebuddy/skills/mini-harness/`
 2. 在 CodeBuddy 对话中输入触发词（如 `mini-harness`、`建团队`）
 3. 技能将按上述角色定义和状态机驱动多 Agent 协作
 
