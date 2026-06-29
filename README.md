@@ -1,11 +1,11 @@
 # Harness — Curated AI Coding Skills Collection
 
 > **Hand-picked AI coding skills for [CodeBuddy](https://codebuddy.cn) & WorkBuddy** — TDD, bug diagnosis, multi-agent workflow, PRD → TAPD sync, and more.
-> A single repository of **31 production-ready AI skills** aggregated from the most respected community projects: [everything-claude-code](https://github.com/affaan-m/everything-claude-code), [mattpocock/skills](https://github.com/mattpocock/skills), and [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill). One command installs them all.
+> A single repository of **18 production-ready engineering skills** aggregated from [everything-claude-code](https://github.com/affaan-m/everything-claude-code) and [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering). One command installs them all.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Skills: 31](https://img.shields.io/badge/Skills-31-blue)](https://github.com/fingermelody/harness/tree/main/skills)
-[![Sources: 3](https://img.shields.io/badge/Sources-ecc%20%7C%20mattpocock%20%7C%20taste--skill-green)](#-credits--sources)
+[![Skills: 18](https://img.shields.io/badge/Skills-18-blue)](https://github.com/fingermelody/harness/tree/main/skills)
+[![Sources: 2](https://img.shields.io/badge/Sources-ecc%20%7C%20mattpocock-green)](#-credits--sources)
 [![Platforms: CodeBuddy%20%7C%20WorkBuddy](https://img.shields.io/badge/Platforms-CodeBuddy%20%7C%20WorkBuddy-orange)](https://codebuddy.cn)
 [![GitHub stars](https://img.shields.io/github/stars/fingermelody/harness?style=social)](https://github.com/fingermelody/harness)
 
@@ -15,12 +15,11 @@
 
 ## ✨ What is this?
 
-A **curated AI Coding Skills repository** — bringing the most useful AI programming skills (TDD, bug diagnosis, requirement conversion, multi-agent collaboration, TAPD sync…) into a single one-command installable package.
+A **curated AI Coding Skills repository** — bringing the most useful AI engineering skills (TDD, bug diagnosis, requirement conversion, multi-agent collaboration, TAPD sync…) into a single one-command installable package.
 
 - ✅ **18 engineering skills** (coding, TDD, diagnosis, PRD, issues, deployment, evaluation…)
-- ✅ **13 design skills** (high-end UI, brand kits, image generation…)
 - ✅ **3 install modes** (CodeBuddy project, CodeBuddy user, WorkBuddy global)
-- ✅ **3 trusted sources** (everything-claude-code, mattpocock, taste-skill)
+- ✅ **2 trusted sources** (everything-claude-code, mattpocock/skills)
 - ✅ **0 lock-in** (plain skill files, each installable independently)
 
 ---
@@ -73,18 +72,54 @@ Intermittent 500 errors in production, error rate 0.5%, peaking between 3-4pm
 
 ---
 
-## 📦 Full Skill Catalog (31)
+### 3. `to-prd` — Conversation → PRD with TAPD Sync (harness-enhanced)
 
-### 🔧 Engineering Skills (18, from this repo + ecc + mattpocock)
+> **Turn a chat into a structured PRD, then push it directly to TAPD.**
+
+Three-phase flow: analyze the conversation to extract intent, generate a structured PRD (background, goals, user stories, acceptance criteria, implementation plan), then call TAPD's API to create a parent story, child stories for each user story, and a Wiki page with the full document.
+
+**Three-Phase Flow**
+
+| Phase | Task | Output |
+|-------|------|--------|
+| **Analyze** | Extract intent from conversation | Goals + user stories |
+| **Generate** | Build the PRD document | Markdown PRD |
+| **Sync** | `stories_create` + `wikis_create` | Live TAPD items |
+
+**When to use**: writing requirement documents, handoff to engineering, syncing to TAPD, sharing specs with stakeholders
+
+```bash
+/to-prd
+Turn this week's chat with the PM into a PRD and push it to TAPD
+```
+
+---
+
+### 4. `to-issues` — PRD → Independently-Grabbable Issues (from mattpocock/skills)
+
+> **Break a PRD or spec into vertical-slice issues each developer can pick up cold.**
+
+Uses the **tracer-bullet** pattern: each issue contains enough context (file paths, test cases, expected behavior) that a developer can claim it, start work, and ship — no extra meetings required.
+
+**When to use**: PRD is ready, sprint planning, distributing work across a team, creating issues for new contributors
+
+```bash
+/to-issues
+Break this PRD into independently-grabbable issues
+```
+
+---
+
+## 📦 Full Skill Catalog (18)
 
 | Skill | Source | Triggers | Description |
 |-------|--------|----------|-------------|
 | **tdd-workflow** ⭐ | ecc | `TDD` `test-driven` | RED→GREEN→REFACTOR, 80%+ coverage |
 | **diagnose** ⭐ | mattpocock | `diagnose` `debug` | Five-step evidence-based diagnosis loop |
+| **to-prd** ⭐ | harness | `write PRD` | Conversation → PRD, auto-sync to TAPD |
+| **to-issues** ⭐ | mattpocock | `break down issues` | PRD → independently-grabbable issues |
 | **eval-harness** | ecc | `evaluation` `eval` | EDD framework with pass@k metrics |
 | **tdd-matt** | mattpocock | `TDD matt` | mattpocock-style TDD |
-| **to-prd** | harness | `write PRD` | Conversation → PRD, auto-sync to TAPD |
-| **to-issues** | mattpocock | `break down issues` | PRD → independently-grabbable issues |
 | **triage** | mattpocock | `triage` | State-machine driven issue triage |
 | **prototype** | mattpocock | `prototype` | Throwaway prototype for design validation |
 | **zoom-out** | mattpocock | `zoom out` | Whole-codebase perspective review |
@@ -98,24 +133,6 @@ Intermittent 500 errors in production, error rate 0.5%, peaking between 3-4pm
 | **setup-engineering-skills** | harness | `install engineering skills` | Batch install engineering skills |
 | **manual** | harness | `manual` `user guide` | ⭐ Team operations manual entry point |
 
-### 🎨 Design Skills (13, from Leonxlnx/taste-skill — install separately)
-
-| Skill | Install Name | Description |
-|-------|--------------|-------------|
-| **taste-skill** | `design-taste-frontend` | ⭐ v2 default: anti-slop frontend framework |
-| **taste-skill-v1** | `design-taste-frontend-v1` | v1 locked version |
-| **gpt-tasteskill** | `gpt-taste` | Strict GPT/Codex variant |
-| **image-to-code-skill** | `image-to-code` | Image-to-code pipeline |
-| **redesign-skill** | `redesign-existing-projects` | Audit and fix existing projects |
-| **soft-skill** | `high-end-visual-design` | Soft high-end UI |
-| **output-skill** | `full-output-enforcement` | Force complete output, no truncation |
-| **minimalist-skill** | `minimalist-ui` | Editorial minimalist UI |
-| **brutalist-skill** | `industrial-brutalist-ui` | Industrial brutalist UI |
-| **stitch-skill** | `stitch-design-taste` | Google Stitch compatible |
-| **imagegen-frontend-web** | — | Generate website reference images |
-| **imagegen-frontend-mobile** | — | Generate mobile screen concepts |
-| **brandkit** | — | Brand kit board generation |
-
 ---
 
 ## 🚀 One-Command Install
@@ -128,7 +145,7 @@ cd harness
 ./install.sh --workbuddy
 ```
 
-✅ All 31 skills are immediately available in any WorkBuddy conversation.
+✅ All 18 skills are immediately available in any WorkBuddy conversation.
 
 ### Option 2: CodeBuddy Project-Level (recommended for teams)
 
@@ -142,12 +159,6 @@ cd harness
 ```bash
 ./install.sh --user
 # Skills install to ~/.codebuddy/skills/
-```
-
-### Option 4: Design Skills Only (13 UI skills)
-
-```bash
-npx skills add https://github.com/Leonxlnx/taste-skill
 ```
 
 ---
@@ -168,7 +179,7 @@ What do you want to do?
 ├─ Write a requirement document
 │   └─ /to-prd (auto-syncs to TAPD)
 │
-├─ Break down a task
+├─ Break down a task into issues
 │   └─ /to-issues (independently-grabbable issues)
 │
 ├─ Improve code quality
@@ -179,10 +190,6 @@ What do you want to do?
 │   ├─ Test environment → /deploy-test-workflow
 │   └─ Production → /deploy-pro
 │
-├─ Design UI
-│   ├─ Write frontend code → /taste-skill (design-taste-frontend)
-│   └─ Generate design images → /imagegen-frontend-web
-│
 └─ Start multi-agent collaboration
     ├─ Lightweight single-file → /mini-harness
     └─ Full framework → /web-harness
@@ -192,13 +199,12 @@ What do you want to do?
 
 ## 📚 Credits & Sources
 
-This repository aggregates skills from three outstanding open-source projects:
+This repository aggregates skills from two outstanding open-source projects:
 
 | Source | Repository | Skills Contributed |
 |--------|------------|--------------------|
 | **everything-claude-code** | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | 2 (tdd-workflow, eval-harness) |
 | **mattpocock/skills** | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering) | 10 (diagnose, tdd-matt, to-prd, to-issues, triage, prototype, zoom-out, grill-with-docs, improve-codebase-architecture, setup-engineering-skills) |
-| **Leonxlnx/taste-skill** | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | 13 (design skills) |
 | **Harness Original** | this repository | 6 (web-harness, mini-harness, basic-code-workflow, deploy-pro, deploy-test-workflow, manual) |
 
 > 💡 All imported skills have been adapted to the CodeBuddy ecosystem (with "claude" → "codebuddy" replacements) while preserving the original logic.
@@ -219,7 +225,7 @@ This repository aggregates skills from three outstanding open-source projects:
 - **URL**: https://github.com/fingermelody/harness
 - **License**: MIT
 - **Status**: actively maintained, PRs welcome
-- **Topics**: `ai-skills` `codebuddy` `workbuddy` `tdd` `diagnose` `multi-agent` `harness` `tapd` `taste-skill`
+- **Topics**: `ai-skills` `codebuddy` `workbuddy` `tdd` `diagnose` `multi-agent` `harness` `tapd` `prd` `issues`
 
 ---
 
@@ -232,5 +238,5 @@ If this repository helps you, please ⭐ Star it! Your support is what keeps us 
 ```bash
 git clone https://github.com/fingermelody/harness.git
 cd harness
-./install.sh --workbuddy   # Get all 31 skills in 30 seconds
+./install.sh --workbuddy   # Get all 18 skills in 30 seconds
 ```

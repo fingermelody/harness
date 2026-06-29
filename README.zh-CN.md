@@ -1,24 +1,25 @@
 # Harness — 精选 AI Coding Skills 集
 
 > **Curated AI coding skills for [CodeBuddy](https://codebuddy.cn) & WorkBuddy** — TDD, code diagnosis, multi-agent workflow, PRD→TAPD sync, and more.
-> 一站收录来自 [everything-claude-code](https://github.com/affaan-m/everything-claude-code)、[mattpocock/skills](https://github.com/mattpocock/skills)、[Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) 等优秀社区的 **31 个 AI 编程技能**，开箱即用。
+> 一站收录来自 [everything-claude-code](https://github.com/affaan-m/everything-claude-code) 和 [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering) 等优秀社区的 **18 个 AI 工程技能**，开箱即用。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Skills: 31](https://img.shields.io/badge/Skills-31-blue)](https://github.com/fingermelody/harness/tree/main/skills)
-[![Sources: 3](https://img.shields.io/badge/Sources-ecc%20%7C%20mattpocock%20%7C%20taste--skill-green)](https://github.com/fingermelody/harness#-技能来源与致谢)
+[![Skills: 18](https://img.shields.io/badge/Skills-18-blue)](https://github.com/fingermelody/harness/tree/main/skills)
+[![Sources: 2](https://img.shields.io/badge/Sources-ecc%20%7C%20mattpocock-green)](#-技能来源与致谢)
 [![Platforms: CodeBuddy%20%7C%20WorkBuddy](https://img.shields.io/badge/Platforms-CodeBuddy%20%7C%20WorkBuddy-orange)](https://codebuddy.cn)
 [![GitHub stars](https://img.shields.io/github/stars/fingermelody/harness?style=social)](https://github.com/fingermelody/harness)
+
+[English](README.md) · [简体中文](README.zh-CN.md)
 
 ---
 
 ## ✨ 这是什么
 
-一个**精选 AI Coding Skills 仓库**——把社区里最实用的 AI 编程技能（TDD、问题诊断、需求转换、多 Agent 协作、TAPD 同步…）整合进一套可一键安装的体系。
+一个**精选 AI Coding Skills 仓库**——把社区里最实用的 AI 工程技能（TDD、问题诊断、需求转换、多 Agent 协作、TAPD 同步…）整合进一套可一键安装的体系。
 
 - ✅ **18 个工程类技能**（编码、TDD、问题诊断、PRD、Issues、部署、评估…）
-- ✅ **13 个设计类技能**（高端 UI、品牌套件、图像生成…）
 - ✅ **3 个安装方式**（CodeBuddy 项目级、用户级、WorkBuddy 全局）
-- ✅ **3 个权威来源**（everything-claude-code、mattpocock、taste-skill）
+- ✅ **2 个权威来源**（everything-claude-code、mattpocock）
 - ✅ **0 锁依赖**（纯技能文件，可独立安装使用）
 
 ---
@@ -72,18 +73,54 @@ Reproduce → Minimise → Hypothesise → Instrument → Fix → Regression Tes
 
 ---
 
-## 📦 完整技能清单（31 个）
+### 3. `to-prd` — 对话转 PRD 并自动同步 TAPD（harness 增强版）
 
-### 🔧 工程类（18 个，来自本仓库 + ecc + mattpocock）
+> **把聊天内容转成结构化 PRD，然后一键推送到 TAPD。**
+
+三阶段流程：分析对话提取意图 → 生成结构化 PRD（背景、目标、用户故事、验收标准、实现计划）→ 调用 TAPD API 创建父需求、为每个用户故事创建子需求、并把完整文档保存为 Wiki 页面。
+
+**三阶段流程**
+
+| 阶段 | 任务 | 产出 |
+|------|------|------|
+| **Analyze** | 提取对话意图 | 目标 + 用户故事 |
+| **Generate** | 生成 PRD 文档 | Markdown PRD |
+| **Sync** | `stories_create` + `wikis_create` | 落地的 TAPD 需求项 |
+
+**适用场景**：写需求文档、交付给工程团队、同步到 TAPD、与干系人对齐规格
+
+```bash
+/to-prd
+把本周和 PM 的讨论转成 PRD，并推到 TAPD
+```
+
+---
+
+### 4. `to-issues` — PRD 拆解为可独立领取的 Issue（来自 mattpocock/skills）
+
+> **把 PRD 或规格拆成纵向切片的 issue，每个开发者拎起来就能开干。**
+
+采用 **tracer-bullet（曳光弹）** 模式：每个 issue 自带足够上下文（文件路径、测试用例、预期行为），开发者领取后无需额外会议就能直接上手交付。
+
+**适用场景**：PRD 完成后做 Sprint 规划、跨团队分发任务、给新贡献者铺路
+
+```bash
+/to-issues
+把这个 PRD 拆成可独立领取的 issue
+```
+
+---
+
+## 📦 完整技能清单（18 个）
 
 | 技能 | 来源 | 触发词 | 说明 |
 |------|------|--------|------|
 | **tdd-workflow** ⭐ | ecc | `TDD` `测试驱动` | RED→GREEN→REFACTOR，覆盖率 80%+ |
 | **diagnose** ⭐ | mattpocock | `问题诊断` `debug` | 五步诊断循环 |
+| **to-prd** ⭐ | harness | `写 PRD` | 对话→PRD，自动同步 TAPD |
+| **to-issues** ⭐ | mattpocock | `拆 Issue` | PRD→可独立领取的 Issue |
 | **eval-harness** | ecc | `质量评估` `eval` | EDD 评估框架（pass@k 指标） |
 | **tdd-matt** | mattpocock | `TDD matt` | mattpocock 风格 TDD |
-| **to-prd** | mattpocock | `写 PRD` | 对话→PRD，自动同步 TAPD |
-| **to-issues** | mattpocock | `拆 Issue` | PRD→可独立领取的 Issue |
 | **triage** | mattpocock | `任务分诊` | Issue/需求分诊状态机 |
 | **prototype** | mattpocock | `原型设计` | 一次性原型验证设计 |
 | **zoom-out** | mattpocock | `全局审查` | 全局视角审视代码库 |
@@ -97,24 +134,6 @@ Reproduce → Minimise → Hypothesise → Instrument → Fix → Regression Tes
 | **setup-engineering-skills** | harness | `安装工程技能` | 批量安装工程技能 |
 | **manual** | harness | `使用手册` `manual` | ⭐ 团队操作指南入口 |
 
-### 🎨 设计类（13 个，来自 Leonxlnx/taste-skill，需单独安装）
-
-| 技能 | install name | 说明 |
-|------|--------------|------|
-| **taste-skill** | `design-taste-frontend` | ⭐ v2 默认：反 slop 前端框架 |
-| **taste-skill-v1** | `design-taste-frontend-v1` | v1 锁定版 |
-| **gpt-tasteskill** | `gpt-taste` | GPT/Codex 严格变体 |
-| **image-to-code-skill** | `image-to-code` | 图像→代码流水线 |
-| **redesign-skill** | `redesign-existing-projects` | 已有项目审计修复 |
-| **soft-skill** | `high-end-visual-design` | 柔和高端 UI |
-| **output-skill** | `full-output-enforcement` | 强制完整输出 |
-| **minimalist-skill** | `minimalist-ui` | 极简编辑风 UI |
-| **brutalist-skill** | `industrial-brutalist-ui` | 粗野工业风 UI |
-| **stitch-skill** | `stitch-design-taste` | Google Stitch 兼容 |
-| **imagegen-frontend-web** | — | 网站参考图生成 |
-| **imagegen-frontend-mobile** | — | 移动端屏幕生成 |
-| **brandkit** | — | 品牌套件板生成 |
-
 ---
 
 ## 🚀 一键安装
@@ -127,7 +146,7 @@ cd harness
 ./install.sh --workbuddy
 ```
 
-✅ 31 个技能立刻在 WorkBuddy 任何对话中可用
+✅ 18 个技能立刻在 WorkBuddy 任何对话中可用
 
 ### 方式 2：CodeBuddy 项目级（推荐用于团队）
 
@@ -141,12 +160,6 @@ cd harness
 ```bash
 ./install.sh --user
 # 技能安装到 ~/.codebuddy/skills/
-```
-
-### 方式 4：设计类技能（13 个 UI 技能）
-
-```bash
-npx skills add https://github.com/Leonxlnx/taste-skill
 ```
 
 ---
@@ -167,7 +180,7 @@ npx skills add https://github.com/Leonxlnx/taste-skill
 ├─ 写需求文档
 │   └─ /to-prd（自动同步 TAPD）
 │
-├─ 拆解任务
+├─ 拆解任务为 Issue
 │   └─ /to-issues（独立可领取的 Issue）
 │
 ├─ 代码质量
@@ -178,10 +191,6 @@ npx skills add https://github.com/Leonxlnx/taste-skill
 │   ├─ 测试环境 → /deploy-test-workflow
 │   └─ 生产环境 → /deploy-pro
 │
-├─ 设计 UI
-│   ├─ 写前端代码 → /taste-skill（design-taste-frontend）
-│   └─ 生成设计图 → /imagegen-frontend-web
-│
 └─ 启动多 Agent 协作
     ├─ 轻量单文件 → /mini-harness
     └─ 完整框架 → /web-harness
@@ -191,14 +200,13 @@ npx skills add https://github.com/Leonxlnx/taste-skill
 
 ## 📚 技能来源与致谢
 
-本仓库的技能来自三个优秀社区：
+本仓库的技能来自两个优秀社区：
 
 | 来源 | 仓库 | 贡献技能数 |
 |------|------|-----------|
 | **everything-claude-code** | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | 2（tdd-workflow, eval-harness） |
 | **mattpocock/skills** | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering) | 10（diagnose, tdd-matt, to-prd, to-issues, triage, prototype, zoom-out, grill-with-docs, improve-codebase-architecture, setup-engineering-skills） |
-| **Leonxlnx/taste-skill** | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | 13（设计类） |
-| **harness 原创** | 本仓库 | 5（web-harness, mini-harness, basic-code-workflow, deploy-pro, deploy-test-workflow, manual） |
+| **harness 原创** | 本仓库 | 6（web-harness, mini-harness, basic-code-workflow, deploy-pro, deploy-test-workflow, manual） |
 
 > 💡 技能文件已根据 CodeBuddy 生态适配（"claude" → "codebuddy"），保持原技能逻辑不变。
 
@@ -218,7 +226,7 @@ npx skills add https://github.com/Leonxlnx/taste-skill
 - **地址**：https://github.com/fingermelody/harness
 - **License**：MIT
 - **维护**：active，欢迎 PR
-- **标签**：`ai-skills` `codebuddy` `workbuddy` `tdd` `diagnose` `multi-agent` `harness` `tapd` `taste-skill`
+- **标签**：`ai-skills` `codebuddy` `workbuddy` `tdd` `diagnose` `multi-agent` `harness` `tapd` `prd` `issues`
 
 ---
 
