@@ -1,280 +1,235 @@
-# Harness — WebApp 多智能体协作框架
+# Harness — 精选 AI Coding Skills 集
 
-> ⭐ 一个专为 Web 应用设计的多智能体开发框架，支持 TDD、Code Review、自动化部署、质量评估。
+> **Curated AI coding skills for [CodeBuddy](https://codebuddy.cn) & WorkBuddy** — TDD, code diagnosis, multi-agent workflow, PRD→TAPD sync, and more.
+> 一站收录来自 [everything-claude-code](https://github.com/affaan-m/everything-claude-code)、[mattpocock/skills](https://github.com/mattpocock/skills)、[Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) 等优秀社区的 **31 个 AI 编程技能**，开箱即用。
 
-## 核心原则
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Skills: 31](https://img.shields.io/badge/Skills-31-blue)](https://github.com/fingermelody/harness/tree/main/skills)
+[![Sources: 3](https://img.shields.io/badge/Sources-ecc%20%7C%20mattpocock%20%7C%20taste--skill-green)](https://github.com/fingermelody/harness#-技能来源与致谢)
+[![Platforms: CodeBuddy%20%7C%20WorkBuddy](https://img.shields.io/badge/Platforms-CodeBuddy%20%7C%20WorkBuddy-orange)](https://codebuddy.cn)
+[![GitHub stars](https://img.shields.io/github/stars/fingermelody/harness?style=social)](https://github.com/fingermelody/harness)
 
-| 原则 | 说明 |
-|------|------|
-| **主 Agent 只分派，不执行** | Team Lead 负责任务拆解、角色分配、质量把关，不做具体编码/测试/部署 |
-| **TDD 驱动开发** | TEST-PLAN（测试骨架）→ CODE（RED→GREEN）→ TEST-RUN（E2E） |
-| **测试/生产分离** | `deploy` 默认测环境，`deploy --prod` 需 PM 审批 |
-| **Code Review 强制** | 每次 CODE 后必须经过 Reviewer Agent 评审 |
-
-## 项目结构
-
-```
-harness/
-├── codebuddy.md                # ⭐ Karpathy 4条编码原则
-├── install.sh                  # ⭐ 一键安装脚本（部署到任意 CodeBuddy 项目）
-├── uninstall.sh                # ⭐ 卸载脚本（安全删除）
-│
-├── rules/                       # 📐 规则与规范
-│   ├── state-machine.md        #    ⭐ 状态机（11状态）
-│   ├── agent-dispatch.md       #    ⭐ Agent 分派规则（核心约束）
-│   ├── memory-system.md        #    三层记忆系统规则
-│   ├── monitoring.md           #    监控与告警规则
-│   ├── verification-gates.md   #    质量门禁规则
-│   ├── .eslintrc.json          #    ESLint 配置
-│   ├── .prettierrc.json        #    Prettier 配置
-│   └── tsconfig.json           #    TypeScript 严格模式
-│
-├── agents/                      # 🤖 Agent 角色定义（7个）
-│   ├── pm.md                   #    项目管理者
-│   ├── planner.md              #    架构规划师
-│   ├── coder.md                #    核心开发者
-│   ├── reviewer.md             #    代码评审师
-│   ├── tester.md               #    测试专家
-│   ├── evaluator.md            #    质量评估师
-│   └── deployer.md             #    部署工程师
-│
-├── skills/                      # 📋 技能包
-│   ├── web-harness/            #    ⭐ 核心技能包
-│   │   └── SKILL.md            #      主技能入口
-│   ├── evals/                  #    评估技能
-│   │   └── evaluation.md       #      WebApp 5维度评估体系
-│   └── manual/                 #    使用手册技能
-│       └── manual.md           #      团队操作指南
-│
-├── memory/                      # 🧠 记忆系统
-│   ├── config.json             #    配置（retention/sync）
-│   ├── state.json              #    当前会话状态
-│   ├── decisions.log           #    决策审计日志
-│   └── README.md
-│
-├── evals/                       # 📊 评估体系
-│   ├── standards.json          #    5 维度评估标准
-│   ├── baseline.json           #    基线指标
-│   ├── eval-runner.js          #    评估运行器
-│   └── README.md
-│
-├── scripts/                     # 🔧 自动化脚本
-│   ├── setup.sh                #    环境初始化
-│   ├── health-check.sh         #    健康检查
-│   ├── deploy-test.sh          #    测试环境部署
-│   ├── deploy-prod.sh          #    生产部署（含备份）
-│   ├── rollback.sh             #    版本回滚
-│   ├── run-eval.sh             #    运行评估
-│   └── README.md
-│
-├── hooks/                       # 🪝 Git Hooks
-│   ├── pre-commit              #    提交前检查（敏感信息/TS/Lint/测试）
-│   ├── commit-msg              #    提交信息格式验证
-│   ├── pre-push                #    推送前检查（完整测试 + 构建）
-│   ├── post-checkout           #    分支切换处理
-│   ├── install.sh              #    一键安装脚本
-│   └── README.md
-│
-├── docs/                        # 📚 文档中心
-│   ├── specs/
-│   │   └── SPEC-TEMPLATE.md    #    ⭐ 功能规格模板（TDD）
-│   └── api/
-│       └── API-TEMPLATE.yaml   #    OpenAPI 3.0 模板
-│
-├── tests/                       # 🧪 测试套件
-│   └── unit/
-│       └── test-skeleton.test.ts
-│
-├── vitest.config.ts            # Vitest 配置
-└── package.json
-```
-
-## 状态机（11 状态）：详见 `rules/state-machine.md`
-
-```
-IDEA → PLAN → TEST-PLAN → CODE → REVIEW → DEPLOY-TEST → TEST-RUN → EVAL → DEPLOY-PROD → MONITOR → ARCHIVE
-```
-
-| 状态 | 说明 | 核心角色 |
-|------|------|----------|
-| `IDEA` | 需求收集与澄清 | PM + Planner |
-| `PLAN` | 技术方案设计 | Planner |
-| `TEST-PLAN` | 输出测试用例骨架（TDD） | Planner + Tester |
-| `CODE` | TDD 循环实现 | Coder |
-| `REVIEW` | 代码审查（强制） | **Reviewer** |
-| `DEPLOY-TEST` | 部署测试环境 | Deployer |
-| `TEST-RUN` | E2E 测试 + 回归 | Tester |
-| `EVAL` | 质量评分 | Evaluator |
-| `DEPLOY-PROD` | 生产发布 | Deployer + PM |
-| `MONITOR` | 线上监控 | Deployer + PM |
-| `ARCHIVE` | 版本归档 | 全员 |
-
-### 状态转换规则
-
-- `IDEA → PLAN`：需求评审通过，AC 定义完成
-- `PLAN → TEST-PLAN`：技术方案完成，API 契约定义
-- `TEST-PLAN → CODE`：测试用例骨架输出完成
-- `CODE → REVIEW`：所有测试 GREEN，Lint 通过
-- `REVIEW → DEPLOY-TEST`：Reviewer 通过（6 维度检查）
-- `DEPLOY-TEST → TEST-RUN`：Health Check 通过
-- `TEST-RUN → EVAL`：E2E 100% 通过
-- `EVAL → DEPLOY-PROD`：评分 ≥ 80
-
-## Agent 角色体系
-
-| Agent | 职责 | 在状态机中的角色 |
-|-------|------|-----------------|
-| `PM` | 需求把控、发布审批 | IDEA 主导、MONITOR/DEPLOY-PROD 审批 |
-| `Planner` | 技术方案、任务拆解 | PLAN 主导 |
-| `Coder` | 代码实现（TDD） | CODE 主导 |
-| `Reviewer` | 代码审查 | REVIEW 主导 |
-| `Tester` | 测试计划 + E2E 执行 | TEST-PLAN + TEST-RUN 主导 |
-| `Evaluator` | 质量评估 | EVAL 主导 |
-| `Deployer` | 部署与环境管理 | DEPLOY-TEST/PROD 主导 |
-
-> **分派规则**：主 Agent（Team Lead）只做任务拆解和分派，不执行具体代码/测试/部署。
-
-## Skills 使用指南
-
-### 技能清单
-
-| 技能 | 路径 | 说明 |
-|------|------|------|
-| **web-harness** | `skills/web-harness/SKILL.md` | ⭐ 核心入口：生成完整 Harness 框架 |
-| **evals** | `skills/evals/evaluation.md` | WebApp 5 维度质量评估体系 |
-| **manual** | `skills/manual/manual.md` | 团队操作指南（快速开始/日常流/FAQ） |
-
-### 方式一：项目级安装（推荐）
-
-将文件复制到目标项目的 `.codebuddy/` 目录：
-
-```bash
-./install.sh /path/to/your/project
-# 文件将安装到 /path/to/your/project/.codebuddy/ 下
-```
-
-安装后，在 CodeBuddy 对话中输入：
-
-```
-/web-harness
-初始化一个 web 项目，tech_stack 是 react + fastapi
-```
-
-### 方式二：用户级安装（全局可用）
-
-安装到 `~/.codebuddy/`，所有项目可用：
-
-```bash
-./install.sh --user
-# 文件将安装到 ~/.codebuddy/ 下
-```
-
-### 方式三：直接引用（无需安装）
-
-在 CodeBuddy 中打开本仓库作为工作空间，技能会自动被识别。
-
-### 技能触发词
-
-| 触发词 | 激活技能 |
-|--------|----------|
-| `新建工程` `初始化框架` `生成 harness` | web-harness |
-| `webapp 框架` `项目脚手架` `多 agent 协作` | web-harness |
-| `build-team` `组建团队` | web-harness |
-| `质量评估` `评估体系` `eval` | evals |
-| `使用手册` `操作指南` `如何使用` | manual |
-
-### 自定义技能
-
-在 `skills/` 目录下创建新的子目录和 `SKILL.md` 即可扩展：
-
-```
-skills/
-└── my-custom-skill/
-    └── SKILL.md      # 技能定义文件（必须）
-```
-
-SKILL.md 格式参考 `skills/web-harness/SKILL.md`，核心字段：
-
-```yaml
 ---
-name: my-custom-skill
-description: 技能描述和触发词
-agent_created: true        # 标记为 Agent 创建的技能
+
+## ✨ 这是什么
+
+一个**精选 AI Coding Skills 仓库**——把社区里最实用的 AI 编程技能（TDD、问题诊断、需求转换、多 Agent 协作、TAPD 同步…）整合进一套可一键安装的体系。
+
+- ✅ **18 个工程类技能**（编码、TDD、问题诊断、PRD、Issues、部署、评估…）
+- ✅ **13 个设计类技能**（高端 UI、品牌套件、图像生成…）
+- ✅ **3 个安装方式**（CodeBuddy 项目级、用户级、WorkBuddy 全局）
+- ✅ **3 个权威来源**（everything-claude-code、mattpocock、taste-skill）
+- ✅ **0 锁依赖**（纯技能文件，可独立安装使用）
+
 ---
-# 技能标题
-## 概述 / 何时使用 / 使用方式 / 注意事项
-```
 
-## 本地开发
+## 🌟 明星技能（Featured Skills）
 
-```bash
-# 初始化环境
-./scripts/setup.sh
+### 1. `tdd-workflow` — TDD 工作流（来自 everything-claude-code）
 
-# 健康检查
-./scripts/health-check.sh
+> **Test-driven development with red-green-refactor loop. 80%+ coverage enforced.**
 
-# 测试环境部署
-./scripts/deploy-test.sh
+让 AI 严格遵循 **RED → GREEN → REFACTOR** 三色循环开发功能或修复 Bug：先写失败的测试 → 写最小实现让测试通过 → 重构。强制 80%+ 测试覆盖率，单元/集成/E2E 全覆盖。
 
-# 生产部署
-./scripts/deploy-prod.sh v1.0.0
+**核心特性**
 
-# 回滚
-./scripts/rollback.sh backups/v1.0.0
-
-# 运行评估
-./scripts/run-eval.sh
-```
-
-## Git Hooks 安装
-
-```bash
-./hooks/install.sh
-```
-
-## 质量门禁
-
-| 维度 | 指标 | 阈值 |
+| 阶段 | 任务 | 产出 |
 |------|------|------|
-| 代码质量 | Lint 通过率 | 100% |
-| | TypeScript 类型覆盖 | ≥ 95% |
-| | 测试覆盖率 | ≥ 80% |
-| 工作流正确性 | 状态转换准确率 | 100% |
-| | 守卫规则符合率 | 100% |
-| Agent 协作 | 任务委托准确性 | ≥ 90% |
-| | 消息送达率 | ≥ 99% |
-| 部署质量 | 构建成功率 | 100% |
-| | 冒烟测试通过率 | 100% |
+| **RED** | 编写失败测试 | 红色测试用例 |
+| **GREEN** | 写最小实现 | 绿色测试通过 |
+| **REFACTOR** | 清理代码 | 保持绿色 + 提升质量 |
+| **VERIFY** | 覆盖率检查 | ≥ 80% 报告 |
 
-## Git 提交规范
+**适用场景**：实现新功能、修复 Bug、重构、API 设计、组件开发
 
 ```bash
-# 格式
-<type>(<scope>): <subject>
-
-# 类型
-feat    新功能
-fix     修复
-docs    文档
-style   格式
-refactor 重构
-test    测试
-chore   构建/工具
-
-# 示例
-feat(core): add agent dispatch rule
-fix(ui): resolve button alignment issue
-docs: update state machine documentation
+# 在 CodeBuddy / WorkBuddy 中直接调用
+/tdd-workflow
+帮我用 TDD 方式实现一个用户注册接口
 ```
 
-## 仓库信息
+---
 
-- **地址**：https://github.com/fingermelody/harness.git
-- **分支**：main
-- **License**：MIT
+### 2. `diagnose` — 问题诊断（来自 mattpocock/skills）
+
+> **Disciplined diagnosis loop for hard bugs and performance regressions.**
+
+专门解决**难调问题**和**性能回退**：复现 → 最小化 → 假设 → 验证 → 修复 → 回归测试。五步诊断循环，不靠猜，靠证据。
+
+**诊断流程**
+
+```
+Reproduce → Minimise → Hypothesise → Instrument → Fix → Regression Test
+   复现        最小化         假设          插桩        修复      回归测试
+```
+
+**适用场景**：线上 Bug、性能回退、内存泄漏、并发问题、疑难杂症
+
+```bash
+/diagnose
+线上偶发 500 错误，错误率 0.5%，集中在下午 3-4 点
+```
+
+---
+
+## 📦 完整技能清单（31 个）
+
+### 🔧 工程类（18 个，来自本仓库 + ecc + mattpocock）
+
+| 技能 | 来源 | 触发词 | 说明 |
+|------|------|--------|------|
+| **tdd-workflow** ⭐ | ecc | `TDD` `测试驱动` | RED→GREEN→REFACTOR，覆盖率 80%+ |
+| **diagnose** ⭐ | mattpocock | `问题诊断` `debug` | 五步诊断循环 |
+| **eval-harness** | ecc | `质量评估` `eval` | EDD 评估框架（pass@k 指标） |
+| **tdd-matt** | mattpocock | `TDD matt` | mattpocock 风格 TDD |
+| **to-prd** | mattpocock | `写 PRD` | 对话→PRD，自动同步 TAPD |
+| **to-issues** | mattpocock | `拆 Issue` | PRD→可独立领取的 Issue |
+| **triage** | mattpocock | `任务分诊` | Issue/需求分诊状态机 |
+| **prototype** | mattpocock | `原型设计` | 一次性原型验证设计 |
+| **zoom-out** | mattpocock | `全局审查` | 全局视角审视代码库 |
+| **grill-with-docs** | mattpocock | `文档深挖` | 挑战方案对抗文档 |
+| **improve-codebase-architecture** | mattpocock | `架构改进` | 深化代码库架构 |
+| **web-harness** | harness | `webapp 框架` `多 agent` | ⭐ 核心入口：生成完整 Harness 框架 |
+| **mini-harness** | harness | `mini-harness` | 轻量单文件多 Agent 协作 |
+| **basic-code-workflow** | harness | `编码流程` | planner→test→coder→reviewer |
+| **deploy-pro** | harness | `生产发布` `部署生产` | 预检→合并→构建→部署→回滚 |
+| **deploy-test-workflow** | harness | `测试部署` | deployer→tester |
+| **setup-engineering-skills** | harness | `安装工程技能` | 批量安装工程技能 |
+| **manual** | harness | `使用手册` `manual` | ⭐ 团队操作指南入口 |
+
+### 🎨 设计类（13 个，来自 Leonxlnx/taste-skill，需单独安装）
+
+| 技能 | install name | 说明 |
+|------|--------------|------|
+| **taste-skill** | `design-taste-frontend` | ⭐ v2 默认：反 slop 前端框架 |
+| **taste-skill-v1** | `design-taste-frontend-v1` | v1 锁定版 |
+| **gpt-tasteskill** | `gpt-taste` | GPT/Codex 严格变体 |
+| **image-to-code-skill** | `image-to-code` | 图像→代码流水线 |
+| **redesign-skill** | `redesign-existing-projects` | 已有项目审计修复 |
+| **soft-skill** | `high-end-visual-design` | 柔和高端 UI |
+| **output-skill** | `full-output-enforcement` | 强制完整输出 |
+| **minimalist-skill** | `minimalist-ui` | 极简编辑风 UI |
+| **brutalist-skill** | `industrial-brutalist-ui` | 粗野工业风 UI |
+| **stitch-skill** | `stitch-design-taste` | Google Stitch 兼容 |
+| **imagegen-frontend-web** | — | 网站参考图生成 |
+| **imagegen-frontend-mobile** | — | 移动端屏幕生成 |
+| **brandkit** | — | 品牌套件板生成 |
+
+---
+
+## 🚀 一键安装
+
+### 方式 1：WorkBuddy 全局（最快，30 秒上手）
 
 ```bash
 git clone https://github.com/fingermelody/harness.git
 cd harness
+./install.sh --workbuddy
+```
+
+✅ 31 个技能立刻在 WorkBuddy 任何对话中可用
+
+### 方式 2：CodeBuddy 项目级（推荐用于团队）
+
+```bash
+./install.sh /path/to/your/project
+# 技能安装到 /path/to/your/project/.codebuddy/skills/
+```
+
+### 方式 3：CodeBuddy 用户级
+
+```bash
+./install.sh --user
+# 技能安装到 ~/.codebuddy/skills/
+```
+
+### 方式 4：设计类技能（13 个 UI 技能）
+
+```bash
+npx skills add https://github.com/Leonxlnx/taste-skill
+```
+
+---
+
+## 🎯 何时用哪个技能（决策树）
+
+```
+想做什么？
+│
+├─ 实现新功能
+│   ├─ 严格 TDD → /tdd-workflow 或 /tdd-matt
+│   └─ 一般编码 → /basic-code-workflow
+│
+├─ 修复 Bug
+│   ├─ 难调问题 → /diagnose
+│   └─ 简单 Bug → /tdd-workflow
+│
+├─ 写需求文档
+│   └─ /to-prd（自动同步 TAPD）
+│
+├─ 拆解任务
+│   └─ /to-issues（独立可领取的 Issue）
+│
+├─ 代码质量
+│   ├─ 整体评估 → /eval-harness
+│   └─ 架构改进 → /improve-codebase-architecture
+│
+├─ 部署
+│   ├─ 测试环境 → /deploy-test-workflow
+│   └─ 生产环境 → /deploy-pro
+│
+├─ 设计 UI
+│   ├─ 写前端代码 → /taste-skill（design-taste-frontend）
+│   └─ 生成设计图 → /imagegen-frontend-web
+│
+└─ 启动多 Agent 协作
+    ├─ 轻量单文件 → /mini-harness
+    └─ 完整框架 → /web-harness
+```
+
+---
+
+## 📚 技能来源与致谢
+
+本仓库的技能来自三个优秀社区：
+
+| 来源 | 仓库 | 贡献技能数 |
+|------|------|-----------|
+| **everything-claude-code** | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | 2（tdd-workflow, eval-harness） |
+| **mattpocock/skills** | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering) | 10（diagnose, tdd-matt, to-prd, to-issues, triage, prototype, zoom-out, grill-with-docs, improve-codebase-architecture, setup-engineering-skills） |
+| **Leonxlnx/taste-skill** | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | 13（设计类） |
+| **harness 原创** | 本仓库 | 5（web-harness, mini-harness, basic-code-workflow, deploy-pro, deploy-test-workflow, manual） |
+
+> 💡 技能文件已根据 CodeBuddy 生态适配（"claude" → "codebuddy"），保持原技能逻辑不变。
+
+---
+
+## 🔗 相关资源
+
+- 📖 [完整使用手册](skills/manual/SKILL.md)
+- 🏗️ [Harness 框架设计](rules/state-machine.md)（11 状态机 + 7 Agent 角色）
+- 🎯 [CodeBuddy 编码原则](codebuddy.md)（Karpathy 4 规则）
+- 🛠️ [技能开发模板](skills/web-harness/SKILL.md)
+
+---
+
+## 📊 仓库信息
+
+- **地址**：https://github.com/fingermelody/harness
+- **License**：MIT
+- **维护**：active，欢迎 PR
+- **标签**：`ai-skills` `codebuddy` `workbuddy` `tdd` `diagnose` `multi-agent` `harness` `tapd` `taste-skill`
+
+---
+
+## 🌟 Star History
+
+如果这个仓库对你有帮助，欢迎 ⭐ Star！你的支持是我们持续整合更多优秀技能的动力。
+
+[![Star History Chart](https://api.star-history.com/svg?repos=fingermelody/harness&type=Date)](https://star-history.com/#fingermelody/harness&Date)
+
+```bash
+git clone https://github.com/fingermelody/harness.git
+cd harness
+./install.sh --workbuddy   # 30 秒上手所有技能
 ```
